@@ -267,7 +267,7 @@ The ternary operator is like an If/Else conditional, but packaged to fit inside 
 ライブラリについては [関数ライブラリスクリプト - AutoHotkeyを流行らせるページ](http://lukewarm.s101.xrea.com/Function.html#library) を参照されたし。
 
 <dl>
-  <dt><a href="http://www.autohotkey.net/<br />animeaime/ClassLibrary/">Class library</a></dt>
+  <dt><a href="http://www.autohotkey.net/~animeaime/ClassLibrary/">Class library</a></dt>
   <dd></dd>
 </dl>
 
@@ -446,7 +446,7 @@ but I will assume you feel comfortable writing and executing AHK scripts.
 
 
 <dl>
-  <dt><a href="http://www.autohotkey.net/<br />easycom/">Windows Scripting for Autohotkey - official homepage</a></dt>
+  <dt><a href="http://www.autohotkey.net/~easycom/">Windows Scripting for Autohotkey - official homepage</a></dt>
   <dd></dd>
 </dl>
 
@@ -828,7 +828,7 @@ Update of 2008-11-05 以降、"No UPX"オプション(GUI)が付いています�
 
 
 <dl>
-  <dt><a href="http://www.autohotkey.net/<br />fincs/SciTE4AutoHotkey_2/web/">SciTE4AutoHotkey v2</a> stable</dt>
+  <dt><a href="http://www.autohotkey.net/~fincs/SciTE4AutoHotkey_2/web/">SciTE4AutoHotkey v2</a> stable</dt>
   <dd><a href="http://www.autohotkey.com/forum/topic40241.html">SciTE4AutoHotkey v2 - New SciTE4AHK version in the making</a> , <a href="http://www.autohotkey.com/forum/topic41503.html">SciTE4AutoHotkey v2 Stable - Released.</a></dd>
 </dl>
 

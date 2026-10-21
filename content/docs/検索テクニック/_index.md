@@ -73,7 +73,7 @@ Google検索コマンド一覧。
 
 
 <dl>
-  <dt><a href="https://www.cc9.ne.jp/<br />initialize/text/SEO/seo_02.html">独学SEO 傾向と対策</a></dt>
+  <dt><a href="https://www.cc9.ne.jp/~initialize/text/SEO/seo_02.html">独学SEO 傾向と対策</a></dt>
   <dd></dd>
 </dl>
 

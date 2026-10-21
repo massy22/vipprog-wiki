@@ -2354,7 +2354,7 @@ Prelude> snd (True, 44)
 <dl>
   <dt><a href="http://haskell.org/onlinereport/">The Haskell 98 Report (Revised)</a></dt>
   <dd>Haskell 98の言語仕様</dd>
-  <dt><a href="http://www.cse.unsw.edu.au/<br />chak/haskell/ffi/">Foreign Function Interface</a></dt>
+  <dt><a href="http://www.cse.unsw.edu.au/~chak/haskell/ffi/">Foreign Function Interface</a></dt>
   <dd>他言語との相互呼び出しを可能にするHaskell 98への拡張</dd>
   <dt><a href="http://www.haskell.org/hierarchical-modules/">Hierarchical modules</a></dt>
   <dd>階層的モジュール(Haskell 98への拡張)</dd>

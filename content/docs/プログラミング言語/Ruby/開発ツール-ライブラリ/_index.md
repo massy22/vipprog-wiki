@@ -138,7 +138,7 @@ Tcl/Tkラッパー。
 GTK+-2.x, GNOME-2.x開発環境をオブジェクト指向スクリプト言語Rubyから利用するための拡張ライブラリ。
 
 <dl>
-  <dt><a href="http://www.osk.3web.ne.jp/<br />nyasu/software/vrproject.html">VisualuRuby</a></dt>
+  <dt><a href="http://www.osk.3web.ne.jp/~nyasu/software/vrproject.html">VisualuRuby</a></dt>
   <dd></dd>
 </dl>
 
@@ -206,7 +206,7 @@ RDoc処理系。現在標準添付。
 
 
 <dl>
-  <dt><a href="http://www.kmc.gr.jp/<br />ohai/rubysdl.html">Ruby/SDL</a></dt>
+  <dt><a href="http://www.kmc.gr.jp/~ohai/rubysdl.html">Ruby/SDL</a></dt>
   <dd></dd>
 </dl>
 
@@ -214,7 +214,7 @@ RDoc処理系。現在標準添付。
 
 
 <dl>
-  <dt><a href="http://www.twin.ne.jp/<br />cyross/Miyako/">Miyako</a></dt>
+  <dt><a href="http://www.twin.ne.jp/~cyross/Miyako/">Miyako</a></dt>
   <dd></dd>
 </dl>
 

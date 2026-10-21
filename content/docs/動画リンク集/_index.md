@@ -57,7 +57,7 @@ C言語による簡単RPG開発講座です。ソースコードもあります�
 ## Python {#w2c93f06}
 
 <dl>
-  <dt><a href="https://www.unixuser.org/<br />euske/doc/index.html#pygame">Python関連文書</a></dt>
+  <dt><a href="https://www.unixuser.org/~euske/doc/index.html#pygame">Python関連文書</a></dt>
   <dd>Pythonによるゲームプログラミングの実況?動画があります。だいぶ前のものなので参考程度に。</dd>
 </dl>
 

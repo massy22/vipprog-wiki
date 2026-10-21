@@ -80,7 +80,7 @@ GOF(Gang of Four)と言う偉い人達が纏めたOOPの良い設計です。<br
 ## 参考リンク {#ned0e46e}
 
 <dl>
-  <dt><a href="http://www2.ocn.ne.jp/<br />yamagu/object/">オブジェクト指向関係資料集</a></dt>
+  <dt><a href="http://www2.ocn.ne.jp/~yamagu/object/">オブジェクト指向関係資料集</a></dt>
   <dd></dd>
 </dl>
 
@@ -147,7 +147,7 @@ GOF(Gang of Four)と言う偉い人達が纏めたOOPの良い設計です。<br
 
 
 <dl>
-  <dt><a href="http://www.komaba.utmc.or.jp/<br />flatline/onlispjhtml/objectOrientedLisp.html">On Lisp --- オブジェクト指向Lisp</a><sup id="fnref-1" class="footnote-ref"><a href="#fn-1">*1</a></sup></dt>
+  <dt><a href="http://www.komaba.utmc.or.jp/~flatline/onlispjhtml/objectOrientedLisp.html">On Lisp --- オブジェクト指向Lisp</a><sup id="fnref-1" class="footnote-ref"><a href="#fn-1">*1</a></sup></dt>
   <dd></dd>
 </dl>
 

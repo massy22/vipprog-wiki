@@ -64,7 +64,7 @@ Lisp言語の処理系が組み込まれているのが特徴
 
 
 <dl>
-  <dt><a href="http://www.jsdlab.co.jp/<br />kamei/">xyzzy</a></dt>
+  <dt><a href="http://www.jsdlab.co.jp/~kamei/">xyzzy</a></dt>
   <dd>emacsのwindows版といえるものの独自性強め。</dd>
 </dl>
 
@@ -91,7 +91,7 @@ Lisp言語の処理系が組み込まれているのが特徴
 
 
 <dl>
-  <dt><a href="http://www5f.biglobe.ne.jp/<br />t-susumu/index.html">TeraPad</a></dt>
+  <dt><a href="http://www5f.biglobe.ne.jp/~t-susumu/index.html">TeraPad</a></dt>
   <dd>やたらありがたられてるけど機能的には不満</dd>
 </dl>
 

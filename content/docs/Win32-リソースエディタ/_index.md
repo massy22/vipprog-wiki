@@ -117,7 +117,7 @@ GUIに対するユーザの理解。　関連：[インタラクションデザ�
 
 
 <dl>
-  <dt><a href="http://www.st.rim.or.jp/<br />k-kazuma/UI/UI.html">万物のユーザーインターフェース考房</a></dt>
+  <dt><a href="http://www.st.rim.or.jp/~k-kazuma/UI/UI.html">万物のユーザーインターフェース考房</a></dt>
   <dd>ユーザーインターフェース設計のポイント</dd>
 </dl>
 
