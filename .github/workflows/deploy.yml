@@ -1,0 +1,40 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.160.0'
+          extended: true
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Copy .htaccess to public directory
+        run: cp .htaccess public/
+
+      - name: List output files
+        run: ls -la public/
+
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          LOCAL_DIR: public
+          REMOTE_DIR: /public_html/vipprog.net/wiki
+          ARGS: --delete  --parallel=10
