@@ -1,0 +1,40 @@
+baseURL: 'https://vipprog.net/wiki/'
+languageCode: 'ja-jp'
+defaultContentLanguage: 'ja'
+title: 'プログラミングスレまとめ in VIP'
+theme: 'hugo-book'
+
+disablePathToLower: true
+enableGitInfo: false
+
+pagination:
+  pagerSize: 50
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  tableOfContents:
+    startLevel: 1
+
+languages:
+  ja:
+    languageName: 'Japanese'
+    contentDir: 'content'
+    weight: 1
+
+params:
+  BookTheme: 'light'
+  BookToC: true
+  BookMenuBundle: '/menu'
+  BookSection: 'docs'
+  BookRepo: 'https://github.com/massy22/vipprog-wiki'
+  BookEditPath: 'edit/main'
+  BookEditLink: 'https://github.com/massy22/vipprog-wiki/edit/main/{{ .Path }}'
+  BookLastChangeLink: 'https://github.com/massy22/vipprog-wiki/commit/{{ .GitInfo.Hash }}'
+  BookDateFormat: '2006-01-02'
+  BookSearch: true
+  BookComments: false
+  BookPortableLinks: true
+  BookServiceWorker: true
+  BookTranslatedOnly: false

@@ -1,0 +1,167 @@
+/* プログラミングスレまとめ in VIP - Wiki風カスタムスタイル */
+:root {
+  --accent-pegasus: #1f6feb; /* 青 */
+  --accent-leo:     #f5a623; /* 橙/黄 */
+  --accent-dragon:  #2ecc71; /* 緑 */
+  --heading-bg-alpha: 0.10;  /* 見出しの薄い背景の不透明度 */
+}
+
+/* 見出し（コンテンツ領域に限定） - Wiki 風に読みやすく */
+.article-heading,
+article :is(h1,h2,h3,h4,h5,h6),
+.markdown :is(h1,h2,h3,h4,h5,h6) {
+  margin-top: 1.2rem;
+  margin-bottom: 0.6rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  line-height: 1.22;
+  scroll-margin-top: 4.5rem;
+  color: #0b1220;
+  font-weight: 600;
+  background-clip: padding-box;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.article-heading,
+article h1,
+.markdown h1 {
+  font-size: 1.8rem;
+  border-left: 4px solid var(--accent-pegasus);
+  background-color: rgba(31, 111, 235, var(--heading-bg-alpha));
+}
+
+.article-heading,
+article h2,
+.markdown h2 {
+  font-size: 1.5rem;
+  border-left: 4px solid var(--accent-leo);
+  background-color: rgba(245, 166, 35, var(--heading-bg-alpha));
+}
+
+.article-heading,
+article h3,
+.markdown h3 {
+  font-size: 1.25rem;
+  border-left: 4px solid var(--accent-dragon);
+  background-color: rgba(46, 204, 113, var(--heading-bg-alpha));
+}
+
+.article-heading,
+article h4,
+.markdown h4 {
+  font-size: 1.1rem;
+  border-left: 3px solid var(--accent-pegasus);
+  background-color: rgba(31, 111, 235, calc(var(--heading-bg-alpha) / 1.5));
+}
+
+.article-heading,
+article h5,
+.markdown h5 {
+  font-size: 1.0rem;
+  border-left: 3px solid var(--accent-leo);
+  background-color: rgba(245, 166, 35, calc(var(--heading-bg-alpha) / 1.5));
+}
+
+.article-heading,
+article h6,
+.markdown h6 {
+  font-size: 0.95rem;
+  border-left: 2px solid var(--accent-dragon);
+  background-color: rgba(46, 204, 113, calc(var(--heading-bg-alpha) / 2));
+  font-weight: 600;
+}
+
+/* リンクの視認性向上 */
+.markdown a {
+  color: var(--accent-pegasus);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.markdown a:hover {
+  color: var(--accent-leo);
+}
+
+/* コードブロックの整形 */
+.markdown pre {
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  background-color: #f6f8fa;
+  border: 1px solid #d0d7de;
+  overflow-x: auto;
+  line-height: 1.45;
+  font-size: 0.9rem;
+}
+
+/* 定義リスト (:用語|解説) の整形 */
+.markdown dl {
+  margin: 0.8rem 0;
+}
+
+.markdown dt {
+  font-weight: 600;
+  margin-top: 0.6rem;
+  color: #1e293b;
+}
+
+.markdown dd {
+  margin-left: 1.5rem;
+  margin-bottom: 0.4rem;
+}
+
+/* 脚注 */
+.markdown .footnotes {
+  margin-top: 2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #d0d7de;
+  font-size: 0.88rem;
+  color: #475569;
+}
+
+.markdown sup.footnote-ref a {
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0 2px;
+}
+
+/* パンくずリスト */
+.book-breadcrumbs {
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+  color: #64748b;
+}
+
+.book-breadcrumbs a {
+  color: var(--accent-pegasus);
+  text-decoration: none;
+}
+
+.book-breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+/* 左サイドバー MenuBar の見出し強調 */
+.book-menu nav ul > li > strong {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.book-menu nav hr {
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 0.5rem 0;
+}
+
+/* 小さい画面での調整 */
+@media (max-width: 640px) {
+  article h1, .markdown h1 { font-size: 1.45rem; }
+  article h2, .markdown h2 { font-size: 1.25rem; }
+  article h3, .markdown h3 { font-size: 1.1rem; }
+  article :is(h4,h5,h6), .markdown :is(h4,h5,h6) {
+    font-size: 0.95rem;
+  }
+}

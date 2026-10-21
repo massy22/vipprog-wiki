@@ -1,0 +1,17 @@
+{{ if and .Parent (not .IsHome) (ne .Section "") }}
+<div class="book-breadcrumbs">
+  <a href="{{ .Site.Home.RelPermalink }}">Top</a>
+  {{- range .Ancestors.Reverse -}}
+    {{- if and (not .IsHome) (ne .RelPermalink ("/docs/" | relURL)) -}}
+      <span> / </span>
+      {{- if .Content -}}
+        <a href="{{ .RelPermalink }}">{{ partial "docs/title" . }}</a>
+      {{- else -}}
+        <span>{{ partial "docs/title" . }}</span>
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  <span> / </span>
+  <span>{{ partial "docs/title" . }}</span>
+</div>
+{{ end }}

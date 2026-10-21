@@ -1,0 +1,5 @@
+{{ with .Site.GetPage .Site.Params.BookMenuBundle }}
+  {{- $href := printf "href=\"%s\"" $.RelPermalink -}}
+  {{- $replacement := printf "%s class=\"active\" " $href -}}
+  {{- replace .Content $href $replacement | safeHTML -}}
+{{ end }}
