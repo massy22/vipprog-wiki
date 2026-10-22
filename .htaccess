@@ -10,9 +10,16 @@ RewriteBase /wiki/
 ErrorDocument 404 /wiki/404.html
 
 # ----------------------------------------------------------------------
-# 1. 実在する静的ファイルおよびディレクトリは rewrite せずにそのまま配信
+# 1. 静的アセットおよびクエリなしの実在ファイル/ディレクトリはそのまま配信
 # ----------------------------------------------------------------------
+# 静的アセット（画像、CSS、JS、フォント等）はクエリの有無に関わらず即座に配信
+RewriteCond %{REQUEST_URI} \.(?:css|js|png|jpe?g|gif|svg|ico|webp|woff2?|ttf|eot|xml|txt|json)$ [NC]
+RewriteRule ^ - [L]
+
+# クエリ文字列がない通常のアクセスで実在ファイルまたはディレクトリの場合は即座に配信
+RewriteCond %{QUERY_STRING} ^$
 RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{QUERY_STRING} ^$
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
@@ -439,10 +446,10 @@ RewriteRule ^初心者用課題/例/カレンダー出力/C(?:\.html)?$ /wiki/do
 RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/線形合同法/C(?:\.html)?$ [NC]
 RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/線形合同法/C/ [R=301,L,QSD]
 RewriteRule ^初心者用課題/例/線形合同法/C(?:\.html)?$ /wiki/docs/練習問題/解答例/線形合同法/C/ [R=301,L,QSD]
-# [RenameLog] 練習問題/転置行列/C++ -> /wiki/docs/練習問題/解答例/転置行列/C/
+# [RenameLog] 練習問題/転置行列/C++ -> /wiki/docs/練習問題/解答例/転置行列/C--/
 RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
-RewriteRule ^練習問題/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/転置行列/C--/ [R=301,L,QSD]
+RewriteRule ^練習問題/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/転置行列/C--/ [R=301,L,QSD]
 # [RenameLog] 初心者用課題/例/ハノイの塔/Prolog -> /wiki/docs/練習問題/解答例/ハノイの塔/Prolog/
 RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/ハノイの塔/Prolog(?:\.html)?$ [NC]
 RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/ハノイの塔/Prolog/ [R=301,L,QSD]
@@ -647,10 +654,10 @@ RewriteRule ^練習問題/解答例/FizzBuzz/C(?:\+|%2B)(?:\+|%2B)\(better(?:\s|
 RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\s|\+|%20)Sharp/CPU使用率メータ(?:\.html)?$ [NC]
 RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/CPU使用率メータ/ [R=301,L,QSD]
 RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp/CPU使用率メータ(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/CPU使用率メータ/ [R=301,L,QSD]
-# [SlugDiff] 練習問題/解答例/転置行列/C++ -> /wiki/docs/練習問題/解答例/転置行列/C/
+# [SlugDiff] 練習問題/解答例/転置行列/C++ -> /wiki/docs/練習問題/解答例/転置行列/C--/
 RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
-RewriteRule ^練習問題/解答例/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/転置行列/C--/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/転置行列/C--/ [R=301,L,QSD]
 # [SlugDiff] Template Method -> /wiki/docs/Template-Method/
 RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Template(?:\s|\+|%20)Method(?:\.html)?$ [NC]
 RewriteRule ^(?:index\.php)?$ /wiki/docs/Template-Method/ [R=301,L,QSD]
@@ -691,10 +698,10 @@ RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp/IDEなんていら�
 RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\+|%2B)(?:\+|%2B)/＼\(\^o\^\)／ｵﾜﾀでもわかるC(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
 RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/ [R=301,L,QSD]
 RewriteRule ^プログラミング言語/C(?:\+|%2B)(?:\+|%2B)/＼\(\^o\^\)／ｵﾜﾀでもわかるC(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/ [R=301,L,QSD]
-# [SlugDiff] 練習問題/解答例/素数判定/C++ -> /wiki/docs/練習問題/解答例/素数判定/C/
+# [SlugDiff] 練習問題/解答例/素数判定/C++ -> /wiki/docs/練習問題/解答例/素数判定/C--/
 RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/素数判定/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/素数判定/C/ [R=301,L,QSD]
-RewriteRule ^練習問題/解答例/素数判定/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/素数判定/C/ [R=301,L,QSD]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/素数判定/C--/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/素数判定/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/素数判定/C--/ [R=301,L,QSD]
 # [SlugDiff] オープンソースマガジン連載「ハッカー養成塾」 -> /wiki/docs/オープンソースマガジン連載-ハッカー養成塾-/
 RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?オープンソースマガジン連載「ハッカー養成塾」(?:\.html)?$ [NC]
 RewriteRule ^(?:index\.php)?$ /wiki/docs/オープンソースマガジン連載-ハッカー養成塾-/ [R=301,L,QSD]
