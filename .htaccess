@@ -1,406 +1,799 @@
-# mod_rewrite エンジンを有効化
-RewriteEngine On
+# ======================================================================
+# VIPPROG WIKI - Apache mod_rewrite .htaccess
+# Hugo移行に伴うURL永続化・旧PukiWiki/RewriteMapリダイレクト設定
+# ======================================================================
 
-# サーバー上のベースディレクトリを指定
+RewriteEngine On
 RewriteBase /wiki/
 
-# カスタム 404 エラーページ
+# 404 エラーページ指定
 ErrorDocument 404 /wiki/404.html
 
-# ----------------------------------------------------
-# 0. PukiWiki システムページ・削除済みページ・プラグイン操作を 410 Gone にする
-# ----------------------------------------------------
+# ----------------------------------------------------------------------
+# 1. 実在する静的ファイルおよびディレクトリは rewrite せずにそのまま配信
+# ----------------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ----------------------------------------------------------------------
+# 2. 廃止されたWiki機能・システムページは 410 Gone
+# ----------------------------------------------------------------------
+# クエリ形式
 RewriteCond %{QUERY_STRING} ^(?:cmd|plugin)=(?!read\b) [NC,OR]
-RewriteCond %{QUERY_STRING} ^(?::|%3A) [NC,OR]
-RewriteCond %{QUERY_STRING} ^(?:MenuBar|RecentChanges|RecentDeleted|InterWiki|InterWikiName|InterWikiSandBox|SandBox|SanbaBox|FormattingRules|Help|BracketName|WikiName|WikiEngines|WikiWikiWeb|YukiWiki|AutoTicketLinkName|RenameLog|test|PukiWiki.*)(?:\.html)?$ [NC]
+RewriteCond %{QUERY_STRING} ^(?::config|MenuBar|RecentChanges|RecentDeleted|InterWiki.*|SandBox|FormattingRules|Help|test)(?:\.html)?$ [NC]
 RewriteRule ^(?:index\.php)?$ - [G,L]
 
-# cmd=read&page=XXX 形式の旧URLを正規化
-RewriteCond %{QUERY_STRING} (?:^|&)cmd=read(?:&|$)
-RewriteCond %{QUERY_STRING} (?:^|&)page=([^&]+)
-RewriteRule ^(?:index\.php)?$ /wiki/?%1 [R=301,NE,L]
-
-# ----------------------------------------------------
-# 1. トップページ (FrontPage / プログラミングスレまとめ in VIP) のリダイレクト
-# ----------------------------------------------------
-RewriteCond %{QUERY_STRING} ^(?:FrontPage|%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%82%B9%E3%83%AC%E3%81%BE%E3%81%A8%E3%82%81(?:\+|%20)in(?:\+|%20)VIP|%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%82%B9%E3%83%AC(?:\+|%20)in(?:\+|%20)VIP)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ /wiki/ [R=301,QSD,L]
-
-# ----------------------------------------------------
-# 2. 旧 :config/RewriteMap エイリアスおよび階層移動ページのリダイレクト
-# ----------------------------------------------------
-RewriteCond %{QUERY_STRING} ^first(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/まず最初に読むページ/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^faq(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/よくある質問/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^env(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/開発環境/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^buy_books(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/本を買う前に/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/c(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/cpp(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C--/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/csharp(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C-Sharp/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/d(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/D/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/java(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Java/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/perl(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Perl/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/php(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/PHP/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/python(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Python/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/ruby(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Ruby/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/javascript(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/JavaScript/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/hsp(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/HSP/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^prog_lang/brainfuck(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Brainfuck/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Brainfuck(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Brainfuck/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Haskell(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Haskell/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Java(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Java/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Lisp(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Lisp/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Perl(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Perl/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^PHP(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/PHP/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Python(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Python/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Ruby(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Ruby/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Scala(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Scala/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Scheme(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Scheme/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^Squeak(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Squeak/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^VisualBasic(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/VisualBasic/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/アルゴリズムとデータ構造/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E7%AE%A1%E7%90%86%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/バージョンの管理システム/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/DesignPattern/ [R=301,NE,QSD,L]
-
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E%2FC%2BSharp%2FCPU%E4%BD%BF%E7%94%A8%E7%8E%87%E3%83%A1%E3%83%BC%E3%82%BF(?:\.html)?$
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C-Sharp/CPU使用率メータ/ [R=301,NE,QSD,L]
-
-# ----------------------------------------------------
-# 3. ページ名に空白や記号 (+, #, ・, (, ) 等) を含みスラッグ変換されたページの個別リダイレクト
-# ----------------------------------------------------
-# Abstract Factory -> docs/Abstract-Factory/
-RewriteCond %{QUERY_STRING} ^Abstract(?:\+|%20)Factory(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/Abstract-Factory/ [R=301,NE,QSD,L]
-
-# Access VBA -> docs/Access-VBA/
-RewriteCond %{QUERY_STRING} ^Access(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/Access-VBA/ [R=301,NE,QSD,L]
-
-# C Sharp /C Sharp/チュートリアル/コンソール編 -> docs/C-Sharp-/C-Sharp/チュートリアル/コンソール編/
-RewriteCond %{QUERY_STRING} ^C(?:\+|%20)Sharp(?:\+|%20)(?:%2F|/)C(?:\+|%20)Sharp(?:%2F|/)%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB(?:%2F|/)%E3%82%B3%E3%83%B3%E3%82%BD%E3%83%BC%E3%83%AB%E7%B7%A8(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/C-Sharp-/C-Sharp/チュートリアル/コンソール編/ [R=301,NE,QSD,L]
-
-# C++初心者ガイド -> docs/C--初心者ガイド/
-RewriteCond %{QUERY_STRING} ^C(?:\+|%2B)(?:\+|%2B)%E5%88%9D%E5%BF%83%E8%80%85%E3%82%AC%E3%82%A4%E3%83%89(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/C--初心者ガイド/ [R=301,NE,QSD,L]
-
-# Common Lisp -> docs/Common-Lisp/
-RewriteCond %{QUERY_STRING} ^Common(?:\+|%20)Lisp(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/Common-Lisp/ [R=301,NE,QSD,L]
-
-# C言語 - よくありそうな質問 -> docs/C言語---よくありそうな質問/
-RewriteCond %{QUERY_STRING} ^C%E8%A8%80%E8%AA%9E(?:\+|%20)-(?:\+|%20)%E3%82%88%E3%81%8F%E3%81%82%E3%82%8A%E3%81%9D%E3%81%86%E3%81%AA%E8%B3%AA%E5%95%8F(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/C言語---よくありそうな質問/ [R=301,NE,QSD,L]
-
-# C言語 - 真似してはイケナイ基本形 -> docs/C言語---真似してはイケナイ基本形/
-RewriteCond %{QUERY_STRING} ^C%E8%A8%80%E8%AA%9E(?:\+|%20)-(?:\+|%20)%E7%9C%9F%E4%BC%BC%E3%81%97%E3%81%A6%E3%81%AF%E3%82%A4%E3%82%B1%E3%83%8A%E3%82%A4%E5%9F%BA%E6%9C%AC%E5%BD%A2(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/C言語---真似してはイケナイ基本形/ [R=301,NE,QSD,L]
-
-# Software Reverse Engineering -> docs/Software-Reverse-Engineering/
-RewriteCond %{QUERY_STRING} ^Software(?:\+|%20)Reverse(?:\+|%20)Engineering(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/Software-Reverse-Engineering/ [R=301,NE,QSD,L]
-
-# Template Method -> docs/Template-Method/
-RewriteCond %{QUERY_STRING} ^Template(?:\+|%20)Method(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/Template-Method/ [R=301,NE,QSD,L]
-
-# VIP的物理講座（初級編） -> docs/VIP的物理講座-初級編-/
-RewriteCond %{QUERY_STRING} ^VIP%E7%9A%84%E7%89%A9%E7%90%86%E8%AC%9B%E5%BA%A7%EF%BC%88%E5%88%9D%E7%B4%9A%E7%B7%A8%EF%BC%89(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/VIP的物理講座-初級編-/ [R=301,NE,QSD,L]
-
-# Win32 リソースエディタ -> docs/Win32-リソースエディタ/
-RewriteCond %{QUERY_STRING} ^Win32(?:\+|%20)%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/Win32-リソースエディタ/ [R=301,NE,QSD,L]
-
-# code golf入門 -> docs/code-golf入門/
-RewriteCond %{QUERY_STRING} ^code(?:\+|%20)golf%E5%85%A5%E9%96%80(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/code-golf入門/ [R=301,NE,QSD,L]
-
-# code golf入門(C言語編) -> docs/code-golf入門-C言語編-/
-RewriteCond %{QUERY_STRING} ^code(?:\+|%20)golf%E5%85%A5%E9%96%80%28C%E8%A8%80%E8%AA%9E%E7%B7%A8%29(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/code-golf入門-C言語編-/ [R=301,NE,QSD,L]
-
-# code golf入門/C言語編 -> docs/code-golf入門/C言語編/
-RewriteCond %{QUERY_STRING} ^code(?:\+|%20)golf%E5%85%A5%E9%96%80(?:%2F|/)C%E8%A8%80%E8%AA%9E%E7%B7%A8(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/code-golf入門/C言語編/ [R=301,NE,QSD,L]
-
-# •練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C -> docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C/
-RewriteCond %{QUERY_STRING} ^%E2%80%A2%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E3%81%B2%E3%82%89%E3%81%8C%E3%81%AA2%E6%96%87%E5%AD%97%E3%82%92%E3%83%A9%E3%83%B3%E3%83%80%E3%83%A0%E3%81%A7%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0(?:%2F|/)C(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C/ [R=301,NE,QSD,L]
-
-# どの言語を学ぶべき？ -> docs/どの言語を学ぶべき-/
-RewriteCond %{QUERY_STRING} ^%E3%81%A9%E3%81%AE%E8%A8%80%E8%AA%9E%E3%82%92%E5%AD%A6%E3%81%B6%E3%81%B9%E3%81%8D%EF%BC%9F(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/どの言語を学ぶべき-/ [R=301,NE,QSD,L]
-
-# はじめてなの…やさしくして… -> docs/はじめてなの-やさしくして-/
-RewriteCond %{QUERY_STRING} ^%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AA%E3%81%AE%E2%80%A6%E3%82%84%E3%81%95%E3%81%97%E3%81%8F%E3%81%97%E3%81%A6%E2%80%A6(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/はじめてなの-やさしくして-/ [R=301,NE,QSD,L]
-
-# オープンソースマガジン連載「ハッカー養成塾」 -> docs/オープンソースマガジン連載-ハッカー養成塾-/
-RewriteCond %{QUERY_STRING} ^%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%82%BD%E3%83%BC%E3%82%B9%E3%83%9E%E3%82%AC%E3%82%B8%E3%83%B3%E9%80%A3%E8%BC%89%E3%80%8C%E3%83%8F%E3%83%83%E3%82%AB%E3%83%BC%E9%A4%8A%E6%88%90%E5%A1%BE%E3%80%8D(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/オープンソースマガジン連載-ハッカー養成塾-/ [R=301,NE,QSD,L]
-
-# ネタ/スレ住人に対し『カス』、『市ね』 -> docs/ネタ/スレ住人に対し-カス---市ね-/
-RewriteCond %{QUERY_STRING} ^%E3%83%8D%E3%82%BF(?:%2F|/)%E3%82%B9%E3%83%AC%E4%BD%8F%E4%BA%BA%E3%81%AB%E5%AF%BE%E3%81%97%E3%80%8E%E3%82%AB%E3%82%B9%E3%80%8F%E3%80%81%E3%80%8E%E5%B8%82%E3%81%AD%E3%80%8F(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/ネタ/スレ住人に対し-カス---市ね-/ [R=301,NE,QSD,L]
-
-# プログラマーやハッカーが活躍する映画・ドラマとか -> docs/プログラマーやハッカーが活躍する映画-ドラマとか/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9E%E3%83%BC%E3%82%84%E3%83%8F%E3%83%83%E3%82%AB%E3%83%BC%E3%81%8C%E6%B4%BB%E8%BA%8D%E3%81%99%E3%82%8B%E6%98%A0%E7%94%BB%E3%83%BB%E3%83%89%E3%83%A9%E3%83%9E%E3%81%A8%E3%81%8B(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラマーやハッカーが活躍する映画-ドラマとか/ [R=301,NE,QSD,L]
-
-# プログラミング言語 / C Sharp / テレホマンマスコット -> docs/プログラミング言語-/-C-Sharp-/-テレホマンマスコット/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:\+|%20)(?:%2F|/)(?:\+|%20)C(?:\+|%20)Sharp(?:\+|%20)(?:%2F|/)(?:\+|%20)%E3%83%86%E3%83%AC%E3%83%9B%E3%83%9E%E3%83%B3%E3%83%9E%E3%82%B9%E3%82%B3%E3%83%83%E3%83%88(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語-/-C-Sharp-/-テレホマンマスコット/ [R=301,NE,QSD,L]
-
-# プログラミング言語/C Sharp -> docs/プログラミング言語/C-Sharp/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)C(?:\+|%20)Sharp(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C-Sharp/ [R=301,NE,QSD,L]
-
-# プログラミング言語/C Sharp/C++やJavaから見るC Sharp -> docs/プログラミング言語/C-Sharp/C--やJavaから見るC-Sharp/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)C(?:\+|%20)Sharp(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)%E3%82%84Java%E3%81%8B%E3%82%89%E8%A6%8B%E3%82%8BC(?:\+|%20)Sharp(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C-Sharp/C--やJavaから見るC-Sharp/ [R=301,NE,QSD,L]
-
-# プログラミング言語/C Sharp/CPU使用率メータ -> docs/プログラミング言語/C-Sharp/CPU使用率メータ/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)C(?:\+|%20)Sharp(?:%2F|/)CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E3%83%A1%E3%83%BC%E3%82%BF(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C-Sharp/CPU使用率メータ/ [R=301,NE,QSD,L]
-
-# プログラミング言語/C Sharp/CSharpチュートリアル -> docs/プログラミング言語/C-Sharp/CSharpチュートリアル/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)C(?:\+|%20)Sharp(?:%2F|/)CSharp%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C-Sharp/CSharpチュートリアル/ [R=301,NE,QSD,L]
-
-# プログラミング言語/C Sharp/IDEなんていらない -> docs/プログラミング言語/C-Sharp/IDEなんていらない/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)C(?:\+|%20)Sharp(?:%2F|/)IDE%E3%81%AA%E3%82%93%E3%81%A6%E3%81%84%E3%82%89%E3%81%AA%E3%81%84(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C-Sharp/IDEなんていらない/ [R=301,NE,QSD,L]
-
-# プログラミング言語/C Sharp/アナログ時計を作ろう -> docs/プログラミング言語/C-Sharp/アナログ時計を作ろう/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)C(?:\+|%20)Sharp(?:%2F|/)%E3%82%A2%E3%83%8A%E3%83%AD%E3%82%B0%E6%99%82%E8%A8%88%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C-Sharp/アナログ時計を作ろう/ [R=301,NE,QSD,L]
-
-# プログラミング言語/C Sharp/入門用簡単なGUIアプリ -> docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)C(?:\+|%20)Sharp(?:%2F|/)%E5%85%A5%E9%96%80%E7%94%A8%E7%B0%A1%E5%8D%98%E3%81%AAGUI%E3%82%A2%E3%83%97%E3%83%AA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/ [R=301,NE,QSD,L]
-
-# プログラミング言語/C++ -> docs/プログラミング言語/C--/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C--/ [R=301,NE,QSD,L]
-
-# プログラミング言語/C++/＼(^o^)／ｵﾜﾀでもわかるC++ -> docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)(?:%2F|/)%EF%BC%BC%28%5Eo%5E%29%EF%BC%8F%EF%BD%B5%EF%BE%9C%EF%BE%80%E3%81%A7%E3%82%82%E3%82%8F%E3%81%8B%E3%82%8BC(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/ [R=301,NE,QSD,L]
-
-# プログラミング言語/Free Pascal -> docs/プログラミング言語/Free-Pascal/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)Free(?:\+|%20)Pascal(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Free-Pascal/ [R=301,NE,QSD,L]
-
-# プログラミング言語/Objective-C/Property List -> docs/プログラミング言語/Objective-C/Property-List/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)Objective-C(?:%2F|/)Property(?:\+|%20)List(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Objective-C/Property-List/ [R=301,NE,QSD,L]
-
-# プログラミング言語/PHP/PHPを始めるには(ゆとり専用) -> docs/プログラミング言語/PHP/PHPを始めるには-ゆとり専用-/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)PHP(?:%2F|/)PHP%E3%82%92%E5%A7%8B%E3%82%81%E3%82%8B%E3%81%AB%E3%81%AF%28%E3%82%86%E3%81%A8%E3%82%8A%E5%B0%82%E7%94%A8%29(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/PHP/PHPを始めるには-ゆとり専用-/ [R=301,NE,QSD,L]
-
-# プログラミング言語/Ruby/開発ツール・ライブラリ -> docs/プログラミング言語/Ruby/開発ツール-ライブラリ/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)Ruby(?:%2F|/)%E9%96%8B%E7%99%BA%E3%83%84%E3%83%BC%E3%83%AB%E3%83%BB%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/Ruby/開発ツール-ライブラリ/ [R=301,NE,QSD,L]
-
-# プログラミング言語/VB.NET -> docs/プログラミング言語/VB-NET/
-RewriteCond %{QUERY_STRING} ^%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E(?:%2F|/)VB\.NET(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/プログラミング言語/VB-NET/ [R=301,NE,QSD,L]
-
-# ポインタ(C,C++) -> docs/ポインタ-C-C---/
-RewriteCond %{QUERY_STRING} ^%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%28C%2CC(?:\+|%2B)(?:\+|%2B)%29(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/ポインタ-C-C---/ [R=301,NE,QSD,L]
-
-# マクロ・プラグイン・拡張作成 -> docs/マクロ-プラグイン-拡張作成/
-RewriteCond %{QUERY_STRING} ^%E3%83%9E%E3%82%AF%E3%83%AD%E3%83%BB%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%83%BB%E6%8B%A1%E5%BC%B5%E4%BD%9C%E6%88%90(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/マクロ-プラグイン-拡張作成/ [R=301,NE,QSD,L]
-
-# 俺流ソフトウェア開発 (初級) -> docs/俺流ソフトウェア開発--初級-/
-RewriteCond %{QUERY_STRING} ^%E4%BF%BA%E6%B5%81%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2%E9%96%8B%E7%99%BA(?:\+|%20)%28%E5%88%9D%E7%B4%9A%29(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/俺流ソフトウェア開発--初級-/ [R=301,NE,QSD,L]
-
-# 大会・コンテスト -> docs/大会-コンテスト/
-RewriteCond %{QUERY_STRING} ^%E5%A4%A7%E4%BC%9A%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%86%E3%82%B9%E3%83%88(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/大会-コンテスト/ [R=301,NE,QSD,L]
-
-# 文字コードとは何か（入門編） -> docs/文字コードとは何か-入門編-/
-RewriteCond %{QUERY_STRING} ^%E6%96%87%E5%AD%97%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%81%AF%E4%BD%95%E3%81%8B%EF%BC%88%E5%85%A5%E9%96%80%E7%B7%A8%EF%BC%89(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/文字コードとは何か-入門編-/ [R=301,NE,QSD,L]
-
-# 練習問題(アルゴリズム編) -> docs/練習問題-アルゴリズム編-/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C%28%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E7%B7%A8%29(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題-アルゴリズム編-/ [R=301,NE,QSD,L]
-
-# 練習問題(アルゴリズム編)/解答例/後置記法/Python -> docs/練習問題-アルゴリズム編-/解答例/後置記法/Python/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C%28%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E7%B7%A8%29(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E5%BE%8C%E7%BD%AE%E8%A8%98%E6%B3%95(?:%2F|/)Python(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題-アルゴリズム編-/解答例/後置記法/Python/ [R=301,NE,QSD,L]
-
-# 練習問題(アルゴリズム編)/解答例/後置記法/Ruby -> docs/練習問題-アルゴリズム編-/解答例/後置記法/Ruby/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C%28%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E7%B7%A8%29(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E5%BE%8C%E7%BD%AE%E8%A8%98%E6%B3%95(?:%2F|/)Ruby(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題-アルゴリズム編-/解答例/後置記法/Ruby/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/C++11/練習問題解答例 -> docs/練習問題/解答例/C--11/練習問題解答例/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)11(?:%2F|/)%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C%E8%A7%A3%E7%AD%94%E4%BE%8B(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/C--11/練習問題解答例/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/FizzBuzz/C++ -> docs/練習問題/解答例/FizzBuzz/C--/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)FizzBuzz(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/FizzBuzz/C--/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/FizzBuzz/C++(better C) -> docs/練習問題/解答例/FizzBuzz/C---better-C-/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)FizzBuzz(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)%28better(?:\+|%20)C%29(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/FizzBuzz/C---better-C-/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/Hit and Blow/Python -> docs/練習問題/解答例/Hit-and-Blow/Python/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)Hit(?:\+|%20)and(?:\+|%20)Blow(?:%2F|/)Python(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/Hit-and-Blow/Python/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C++ -> docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C--/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E3%81%B2%E3%82%89%E3%81%8C%E3%81%AA2%E6%96%87%E5%AD%97%E3%82%92%E3%83%A9%E3%83%B3%E3%83%80%E3%83%A0%E3%81%A7%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C--/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/ハノイの塔/C++ -> docs/練習問題/解答例/ハノイの塔/C--/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E3%83%8F%E3%83%8E%E3%82%A4%E3%81%AE%E5%A1%94(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/ハノイの塔/C--/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/世界のナベアツ問題/Common Lisp -> docs/練習問題/解答例/世界のナベアツ問題/Common-Lisp/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E4%B8%96%E7%95%8C%E3%81%AE%E3%83%8A%E3%83%99%E3%82%A2%E3%83%84%E5%95%8F%E9%A1%8C(?:%2F|/)Common(?:\+|%20)Lisp(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/世界のナベアツ問題/Common-Lisp/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/干支を求めるプログラム/Excel VBA -> docs/練習問題/解答例/干支を求めるプログラム/Excel-VBA/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E5%B9%B2%E6%94%AF%E3%82%92%E6%B1%82%E3%82%81%E3%82%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0(?:%2F|/)Excel(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/干支を求めるプログラム/Excel-VBA/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/平方根/C++(better C) -> docs/練習問題/解答例/平方根/C---better-C-/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E5%B9%B3%E6%96%B9%E6%A0%B9(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)%28better(?:\+|%20)C%29(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/平方根/C---better-C-/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/星座を求めるプログラム/Excel VBA -> docs/練習問題/解答例/星座を求めるプログラム/Excel-VBA/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E6%98%9F%E5%BA%A7%E3%82%92%E6%B1%82%E3%82%81%E3%82%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0(?:%2F|/)Excel(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/星座を求めるプログラム/Excel-VBA/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/素数判定/C++ -> docs/練習問題/解答例/素数判定/C--/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E7%B4%A0%E6%95%B0%E5%88%A4%E5%AE%9A(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/素数判定/C--/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/素数判定/C++(better C) -> docs/練習問題/解答例/素数判定/C---better-C-/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E7%B4%A0%E6%95%B0%E5%88%A4%E5%AE%9A(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)%28better(?:\+|%20)C%29(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/素数判定/C---better-C-/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/素数判定/Ｅｘｃｅｌ VBA -> docs/練習問題/解答例/素数判定/Ｅｘｃｅｌ-VBA/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E7%B4%A0%E6%95%B0%E5%88%A4%E5%AE%9A(?:%2F|/)%EF%BC%A5%EF%BD%98%EF%BD%83%EF%BD%85%EF%BD%8C(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/素数判定/Ｅｘｃｅｌ-VBA/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/転置行列/C++ -> docs/練習問題/解答例/転置行列/C--/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E8%BB%A2%E7%BD%AE%E8%A1%8C%E5%88%97(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/転置行列/C--/ [R=301,NE,QSD,L]
-
-# 練習問題/解答例/連立方程式を解く/C++ -> docs/練習問題/解答例/連立方程式を解く/C--/
-RewriteCond %{QUERY_STRING} ^%E7%B7%B4%E7%BF%92%E5%95%8F%E9%A1%8C(?:%2F|/)%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E9%80%A3%E7%AB%8B%E6%96%B9%E7%A8%8B%E5%BC%8F%E3%82%92%E8%A7%A3%E3%81%8F(?:%2F|/)C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/練習問題/解答例/連立方程式を解く/C--/ [R=301,NE,QSD,L]
-
-# 色、いわゆるカラー -> docs/色-いわゆるカラー/
-RewriteCond %{QUERY_STRING} ^%E8%89%B2%E3%80%81%E3%81%84%E3%82%8F%E3%82%86%E3%82%8B%E3%82%AB%E3%83%A9%E3%83%BC(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/色-いわゆるカラー/ [R=301,NE,QSD,L]
-
-# 解答例/FizzBuzz/Excel VBA -> docs/解答例/FizzBuzz/Excel-VBA/
-RewriteCond %{QUERY_STRING} ^%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)FizzBuzz(?:%2F|/)Excel(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/解答例/FizzBuzz/Excel-VBA/ [R=301,NE,QSD,L]
-
-# 解答例/世界のナベアツ問題/Excel VBA -> docs/解答例/世界のナベアツ問題/Excel-VBA/
-RewriteCond %{QUERY_STRING} ^%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E4%B8%96%E7%95%8C%E3%81%AE%E3%83%8A%E3%83%99%E3%82%A2%E3%83%84%E5%95%8F%E9%A1%8C(?:%2F|/)Excel(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/解答例/世界のナベアツ問題/Excel-VBA/ [R=301,NE,QSD,L]
-
-# 解答例/二次方程式の解/Excel VBA -> docs/解答例/二次方程式の解/Excel-VBA/
-RewriteCond %{QUERY_STRING} ^%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E4%BA%8C%E6%AC%A1%E6%96%B9%E7%A8%8B%E5%BC%8F%E3%81%AE%E8%A7%A3(?:%2F|/)Excel(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/解答例/二次方程式の解/Excel-VBA/ [R=301,NE,QSD,L]
-
-# 解答例/線形合同法/Excel VBA -> docs/解答例/線形合同法/Excel-VBA/
-RewriteCond %{QUERY_STRING} ^%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E7%B7%9A%E5%BD%A2%E5%90%88%E5%90%8C%E6%B3%95(?:%2F|/)Excel(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/解答例/線形合同法/Excel-VBA/ [R=301,NE,QSD,L]
-
-# 解答例/転置行列/Excel VBA -> docs/解答例/転置行列/Excel-VBA/
-RewriteCond %{QUERY_STRING} ^%E8%A7%A3%E7%AD%94%E4%BE%8B(?:%2F|/)%E8%BB%A2%E7%BD%AE%E8%A1%8C%E5%88%97(?:%2F|/)Excel(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/解答例/転置行列/Excel-VBA/ [R=301,NE,QSD,L]
-
-# 資格・試験 -> docs/資格-試験/
-RewriteCond %{QUERY_STRING} ^%E8%B3%87%E6%A0%BC%E3%83%BB%E8%A9%A6%E9%A8%93(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/資格-試験/ [R=301,NE,QSD,L]
-
-# Ｅｘｃｅｌ VBA -> docs/Ｅｘｃｅｌ-VBA/
-RewriteCond %{QUERY_STRING} ^%EF%BC%A5%EF%BD%98%EF%BD%83%EF%BD%85%EF%BD%8C(?:\+|%20)VBA(?:\.html)?$ [NC]
-RewriteRule ^(?:index\.php)?$ docs/Ｅｘｃｅｌ-VBA/ [R=301,NE,QSD,L]
-
-# ----------------------------------------------------
-# 4. 通常の旧 PukiWiki URL (?ページ名 または ?ページ名.html) を /wiki/docs/ページ名/ にリダイレクト
-# ----------------------------------------------------
+# パス形式
+RewriteRule ^(?::config/|MenuBar|RecentChanges|RecentDeleted|InterWiki.*|SandBox|FormattingRules|Help|test)(?:\.html)?$ - [G,L]
+
+# ----------------------------------------------------------------------
+# 3. トップページ (FrontPage / トップページ)
+# ----------------------------------------------------------------------
+RewriteCond %{QUERY_STRING} ^(?:FrontPage|トップページ)(?:\.html)?$ [NC,OR]
+RewriteCond %{QUERY_STRING} ^(?:cmd|plugin)=read&(?:amp;)?(?:page=)?(?:FrontPage|トップページ)$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/ [R=301,L,QSD]
+RewriteRule ^(?:FrontPage|トップページ)(?:\.html)?$ /wiki/ [R=301,L,QSD]
+
+# ----------------------------------------------------------------------
+# 4. 個別リダイレクト
+# (RewriteMapエイリアス / 過去の改名履歴 / スラッグ差異 全184件)
+# ----------------------------------------------------------------------
+# [RewriteMap] first -> /wiki/docs/はじめてなの-やさしくして-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?first(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/はじめてなの-やさしくして-/ [R=301,L,QSD]
+RewriteRule ^first(?:\.html)?$ /wiki/docs/はじめてなの-やさしくして-/ [R=301,L,QSD]
+# [RewriteMap] faq -> /wiki/docs/よくある質問/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?faq(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/よくある質問/ [R=301,L,QSD]
+RewriteRule ^faq(?:\.html)?$ /wiki/docs/よくある質問/ [R=301,L,QSD]
+# [RewriteMap] how_to_question -> /wiki/docs/質問の仕方/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?how_to_question(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/質問の仕方/ [R=301,L,QSD]
+RewriteRule ^how_to_question(?:\.html)?$ /wiki/docs/質問の仕方/ [R=301,L,QSD]
+# [RewriteMap] which_lang -> /wiki/docs/どの言語を学ぶべき-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?which_lang(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/どの言語を学ぶべき-/ [R=301,L,QSD]
+RewriteRule ^which_lang(?:\.html)?$ /wiki/docs/どの言語を学ぶべき-/ [R=301,L,QSD]
+# [RewriteMap] prog_lang_list -> /wiki/docs/プログラミング言語おしながき/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang_list(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語おしながき/ [R=301,L,QSD]
+RewriteRule ^prog_lang_list(?:\.html)?$ /wiki/docs/プログラミング言語おしながき/ [R=301,L,QSD]
+# [RewriteMap] prog_lang -> /wiki/docs/プログラミング言語/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/ [R=301,L,QSD]
+RewriteRule ^prog_lang(?:\.html)?$ /wiki/docs/プログラミング言語/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/asm -> /wiki/docs/プログラミング言語/アセンブリ言語/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/asm(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/アセンブリ言語/ [R=301,L,QSD]
+RewriteRule ^prog_lang/asm(?:\.html)?$ /wiki/docs/プログラミング言語/アセンブリ言語/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/asm/masm -> /wiki/docs/プログラミング言語/アセンブリ言語/masm/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/asm/masm(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/アセンブリ言語/masm/ [R=301,L,QSD]
+RewriteRule ^prog_lang/asm/masm(?:\.html)?$ /wiki/docs/プログラミング言語/アセンブリ言語/masm/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/actionscript -> /wiki/docs/プログラミング言語/ActionScript/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/actionscript(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/ActionScript/ [R=301,L,QSD]
+RewriteRule ^prog_lang/actionscript(?:\.html)?$ /wiki/docs/プログラミング言語/ActionScript/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/c -> /wiki/docs/プログラミング言語/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/c(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C/ [R=301,L,QSD]
+RewriteRule ^prog_lang/c(?:\.html)?$ /wiki/docs/プログラミング言語/C/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/cs -> /wiki/docs/プログラミング言語/C-Sharp/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/cs(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/ [R=301,L,QSD]
+RewriteRule ^prog_lang/cs(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/cs/f700is_tutorial -> /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/cs/f700is_tutorial(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/ [R=301,L,QSD]
+RewriteRule ^prog_lang/cs/f700is_tutorial(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/cs/gui_tutorial -> /wiki/docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/cs/gui_tutorial(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/ [R=301,L,QSD]
+RewriteRule ^prog_lang/cs/gui_tutorial(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/cpp -> /wiki/docs/プログラミング言語/C--/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/cpp(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C--/ [R=301,L,QSD]
+RewriteRule ^prog_lang/cpp(?:\.html)?$ /wiki/docs/プログラミング言語/C--/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/cpp/owata -> /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/cpp/owata(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/ [R=301,L,QSD]
+RewriteRule ^prog_lang/cpp/owata(?:\.html)?$ /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/c/pointer -> /wiki/docs/プログラミング言語/C/ポインタ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/c/pointer(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C/ポインタ/ [R=301,L,QSD]
+RewriteRule ^prog_lang/c/pointer(?:\.html)?$ /wiki/docs/プログラミング言語/C/ポインタ/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/d -> /wiki/docs/プログラミング言語/D/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/d(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/D/ [R=301,L,QSD]
+RewriteRule ^prog_lang/d(?:\.html)?$ /wiki/docs/プログラミング言語/D/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/delphi -> /wiki/docs/プログラミング言語/Delphi/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/delphi(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Delphi/ [R=301,L,QSD]
+RewriteRule ^prog_lang/delphi(?:\.html)?$ /wiki/docs/プログラミング言語/Delphi/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/hsp -> /wiki/docs/プログラミング言語/HSP/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/hsp(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/HSP/ [R=301,L,QSD]
+RewriteRule ^prog_lang/hsp(?:\.html)?$ /wiki/docs/プログラミング言語/HSP/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/haskell -> /wiki/docs/プログラミング言語/Haskell/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/haskell(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Haskell/ [R=301,L,QSD]
+RewriteRule ^prog_lang/haskell(?:\.html)?$ /wiki/docs/プログラミング言語/Haskell/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/ironpython -> /wiki/docs/プログラミング言語/IronPython/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/ironpython(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/IronPython/ [R=301,L,QSD]
+RewriteRule ^prog_lang/ironpython(?:\.html)?$ /wiki/docs/プログラミング言語/IronPython/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/java -> /wiki/docs/プログラミング言語/Java/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/java(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Java/ [R=301,L,QSD]
+RewriteRule ^prog_lang/java(?:\.html)?$ /wiki/docs/プログラミング言語/Java/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/java/except_eclipse -> /wiki/docs/プログラミング言語/Java/eclipse以外の方法/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/java/except_eclipse(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Java/eclipse以外の方法/ [R=301,L,QSD]
+RewriteRule ^prog_lang/java/except_eclipse(?:\.html)?$ /wiki/docs/プログラミング言語/Java/eclipse以外の方法/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/javascript -> /wiki/docs/プログラミング言語/JavaScript/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/javascript(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/JavaScript/ [R=301,L,QSD]
+RewriteRule ^prog_lang/javascript(?:\.html)?$ /wiki/docs/プログラミング言語/JavaScript/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/php -> /wiki/docs/プログラミング言語/PHP/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/php(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/PHP/ [R=301,L,QSD]
+RewriteRule ^prog_lang/php(?:\.html)?$ /wiki/docs/プログラミング言語/PHP/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/php/first -> /wiki/docs/プログラミング言語/PHP/PHPを始めるには/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/php/first(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/PHP/PHPを始めるには/ [R=301,L,QSD]
+RewriteRule ^prog_lang/php/first(?:\.html)?$ /wiki/docs/プログラミング言語/PHP/PHPを始めるには/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/perl -> /wiki/docs/プログラミング言語/Perl/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/perl(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Perl/ [R=301,L,QSD]
+RewriteRule ^prog_lang/perl(?:\.html)?$ /wiki/docs/プログラミング言語/Perl/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/python -> /wiki/docs/プログラミング言語/Python/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/python(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Python/ [R=301,L,QSD]
+RewriteRule ^prog_lang/python(?:\.html)?$ /wiki/docs/プログラミング言語/Python/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/ruby -> /wiki/docs/プログラミング言語/Ruby/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/ruby(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Ruby/ [R=301,L,QSD]
+RewriteRule ^prog_lang/ruby(?:\.html)?$ /wiki/docs/プログラミング言語/Ruby/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/scheme -> /wiki/docs/プログラミング言語/Scheme/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/scheme(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Scheme/ [R=301,L,QSD]
+RewriteRule ^prog_lang/scheme(?:\.html)?$ /wiki/docs/プログラミング言語/Scheme/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/scheme/list -> /wiki/docs/プログラミング言語/Scheme/Schemeにおけるlistの実際/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/scheme/list(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Scheme/Schemeにおけるlistの実際/ [R=301,L,QSD]
+RewriteRule ^prog_lang/scheme/list(?:\.html)?$ /wiki/docs/プログラミング言語/Scheme/Schemeにおけるlistの実際/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/sql -> /wiki/docs/プログラミング言語/SQL/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/sql(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/SQL/ [R=301,L,QSD]
+RewriteRule ^prog_lang/sql(?:\.html)?$ /wiki/docs/プログラミング言語/SQL/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/vb -> /wiki/docs/プログラミング言語/VB-NET/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/vb(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/VB-NET/ [R=301,L,QSD]
+RewriteRule ^prog_lang/vb(?:\.html)?$ /wiki/docs/プログラミング言語/VB-NET/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/nadesiko -> /wiki/docs/プログラミング言語/なでしこ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/nadesiko(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/なでしこ/ [R=301,L,QSD]
+RewriteRule ^prog_lang/nadesiko(?:\.html)?$ /wiki/docs/プログラミング言語/なでしこ/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/nadesiko/happy_course -> /wiki/docs/プログラミング言語/なでしこ/楽しいなでしこ講座/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/nadesiko/happy_course(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/なでしこ/楽しいなでしこ講座/ [R=301,L,QSD]
+RewriteRule ^prog_lang/nadesiko/happy_course(?:\.html)?$ /wiki/docs/プログラミング言語/なでしこ/楽しいなでしこ講座/ [R=301,L,QSD]
+# [RewriteMap] prog_lang/vip -> /wiki/docs/プログラミング言語/VIP言語/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_lang/vip(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/VIP言語/ [R=301,L,QSD]
+RewriteRule ^prog_lang/vip(?:\.html)?$ /wiki/docs/プログラミング言語/VIP言語/ [R=301,L,QSD]
+# [RewriteMap] prog_term -> /wiki/docs/プログラミング用語/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?prog_term(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング用語/ [R=301,L,QSD]
+RewriteRule ^prog_term(?:\.html)?$ /wiki/docs/プログラミング用語/ [R=301,L,QSD]
+# [RewriteMap] movies_link -> /wiki/docs/動画リンク集/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?movies_link(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/動画リンク集/ [R=301,L,QSD]
+RewriteRule ^movies_link(?:\.html)?$ /wiki/docs/動画リンク集/ [R=301,L,QSD]
+# [RewriteMap] editor -> /wiki/docs/エディタ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?editor(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/エディタ/ [R=301,L,QSD]
+RewriteRule ^editor(?:\.html)?$ /wiki/docs/エディタ/ [R=301,L,QSD]
+# [RewriteMap] editor/vim -> /wiki/docs/エディタ/vim/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?editor/vim(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/エディタ/vim/ [R=301,L,QSD]
+RewriteRule ^editor/vim(?:\.html)?$ /wiki/docs/エディタ/vim/ [R=301,L,QSD]
+# [RewriteMap] win32_resource_editor -> /wiki/docs/Win32-リソースエディタ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?win32_resource_editor(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/Win32-リソースエディタ/ [R=301,L,QSD]
+RewriteRule ^win32_resource_editor(?:\.html)?$ /wiki/docs/Win32-リソースエディタ/ [R=301,L,QSD]
+# [RewriteMap] dev_setting -> /wiki/docs/開発環境/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?dev_setting(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/開発環境/ [R=301,L,QSD]
+RewriteRule ^dev_setting(?:\.html)?$ /wiki/docs/開発環境/ [R=301,L,QSD]
+# [RewriteMap] design_pettern -> /wiki/docs/デザインパターン/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?design_pettern(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/デザインパターン/ [R=301,L,QSD]
+RewriteRule ^design_pettern(?:\.html)?$ /wiki/docs/デザインパターン/ [R=301,L,QSD]
+# [RewriteMap] hello_world -> /wiki/docs/HelloWorld/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?hello_world(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/HelloWorld/ [R=301,L,QSD]
+RewriteRule ^hello_world(?:\.html)?$ /wiki/docs/HelloWorld/ [R=301,L,QSD]
+# [RewriteMap] hello_work -> /wiki/docs/HelloWork/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?hello_work(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/HelloWork/ [R=301,L,QSD]
+RewriteRule ^hello_work(?:\.html)?$ /wiki/docs/HelloWork/ [R=301,L,QSD]
+# [RewriteMap] template -> /wiki/docs/テンプレ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?template(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/テンプレ/ [R=301,L,QSD]
+RewriteRule ^template(?:\.html)?$ /wiki/docs/テンプレ/ [R=301,L,QSD]
+# [RewriteMap] want_to_make_game -> /wiki/docs/ゲーム作りたいです/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?want_to_make_game(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ゲーム作りたいです/ [R=301,L,QSD]
+RewriteRule ^want_to_make_game(?:\.html)?$ /wiki/docs/ゲーム作りたいです/ [R=301,L,QSD]
+# [RewriteMap] course -> /wiki/docs/進路の選び方/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?course(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/進路の選び方/ [R=301,L,QSD]
+RewriteRule ^course(?:\.html)?$ /wiki/docs/進路の選び方/ [R=301,L,QSD]
+# [RewriteMap] book_review -> /wiki/docs/書籍レビュー/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?book_review(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/書籍レビュー/ [R=301,L,QSD]
+RewriteRule ^book_review(?:\.html)?$ /wiki/docs/書籍レビュー/ [R=301,L,QSD]
+# [RewriteMap] exercise -> /wiki/docs/練習問題/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?exercise(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/ [R=301,L,QSD]
+RewriteRule ^exercise(?:\.html)?$ /wiki/docs/練習問題/ [R=301,L,QSD]
+# [RewriteMap] exercise/answer -> /wiki/docs/練習問題/解答例/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?exercise/answer(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/ [R=301,L,QSD]
+RewriteRule ^exercise/answer(?:\.html)?$ /wiki/docs/練習問題/解答例/ [R=301,L,QSD]
+# [RewriteMap] nagato -> /wiki/docs/長門有希/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?nagato(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/長門有希/ [R=301,L,QSD]
+RewriteRule ^nagato(?:\.html)?$ /wiki/docs/長門有希/ [R=301,L,QSD]
+# [RewriteMap] recommended_site -> /wiki/docs/オヌヌメサイト/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?recommended_site(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/オヌヌメサイト/ [R=301,L,QSD]
+RewriteRule ^recommended_site(?:\.html)?$ /wiki/docs/オヌヌメサイト/ [R=301,L,QSD]
+# [RewriteMap] progress_table -> /wiki/docs/進度表/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?progress_table(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/進度表/ [R=301,L,QSD]
+RewriteRule ^progress_table(?:\.html)?$ /wiki/docs/進度表/ [R=301,L,QSD]
+# [RewriteMap] english -> /wiki/docs/英語/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?english(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/英語/ [R=301,L,QSD]
+RewriteRule ^english(?:\.html)?$ /wiki/docs/英語/ [R=301,L,QSD]
+# [RewriteMap] show_software -> /wiki/docs/ソフトウェアを公開する/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?show_software(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ソフトウェアを公開する/ [R=301,L,QSD]
+RewriteRule ^show_software(?:\.html)?$ /wiki/docs/ソフトウェアを公開する/ [R=301,L,QSD]
+# [RewriteMap] request -> /wiki/docs/リクエスト/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?request(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/リクエスト/ [R=301,L,QSD]
+RewriteRule ^request(?:\.html)?$ /wiki/docs/リクエスト/ [R=301,L,QSD]
+# [RewriteMap] past_thread -> /wiki/docs/過去スレ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?past_thread(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/過去スレ/ [R=301,L,QSD]
+RewriteRule ^past_thread(?:\.html)?$ /wiki/docs/過去スレ/ [R=301,L,QSD]
+# [RewriteMap] how_to_cmd -> /wiki/docs/コマンドプロンプトの使い方/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?how_to_cmd(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/コマンドプロンプトの使い方/ [R=301,L,QSD]
+RewriteRule ^how_to_cmd(?:\.html)?$ /wiki/docs/コマンドプロンプトの使い方/ [R=301,L,QSD]
+# [RewriteMap] const_and_dest -> /wiki/docs/コンストラクタとデストラクタ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?const_and_dest(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/コンストラクタとデストラクタ/ [R=301,L,QSD]
+RewriteRule ^const_and_dest(?:\.html)?$ /wiki/docs/コンストラクタとデストラクタ/ [R=301,L,QSD]
+# [RewriteMap] ds_compiler -> /wiki/docs/NintendoDS向けコンパイラのインストール方法/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?ds_compiler(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/NintendoDS向けコンパイラのインストール方法/ [R=301,L,QSD]
+RewriteRule ^ds_compiler(?:\.html)?$ /wiki/docs/NintendoDS向けコンパイラのインストール方法/ [R=301,L,QSD]
+# [RewriteMap] html_and_css -> /wiki/docs/プログラミング言語/HTMLとCSS/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?html_and_css(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/HTMLとCSS/ [R=301,L,QSD]
+RewriteRule ^html_and_css(?:\.html)?$ /wiki/docs/プログラミング言語/HTMLとCSS/ [R=301,L,QSD]
+# [RewriteMap] wireshark_install -> /wiki/docs/WireSharkのインストール/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?wireshark_install(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/WireSharkのインストール/ [R=301,L,QSD]
+RewriteRule ^wireshark_install(?:\.html)?$ /wiki/docs/WireSharkのインストール/ [R=301,L,QSD]
+# [RewriteMap] deliverable -> /wiki/docs/成果物/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?deliverable(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/成果物/ [R=301,L,QSD]
+RewriteRule ^deliverable(?:\.html)?$ /wiki/docs/成果物/ [R=301,L,QSD]
+# [RewriteMap] algebra_of_logic -> /wiki/docs/論理代数/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?algebra_of_logic(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/論理代数/ [R=301,L,QSD]
+RewriteRule ^algebra_of_logic(?:\.html)?$ /wiki/docs/論理代数/ [R=301,L,QSD]
+# [RewriteMap] math -> /wiki/docs/数学/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?math(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/数学/ [R=301,L,QSD]
+RewriteRule ^math(?:\.html)?$ /wiki/docs/数学/ [R=301,L,QSD]
+# [RewriteMap] complex_number -> /wiki/docs/複素数/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?complex_number(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/複素数/ [R=301,L,QSD]
+RewriteRule ^complex_number(?:\.html)?$ /wiki/docs/複素数/ [R=301,L,QSD]
+# [RewriteMap] physics -> /wiki/docs/物理/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?physics(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/物理/ [R=301,L,QSD]
+RewriteRule ^physics(?:\.html)?$ /wiki/docs/物理/ [R=301,L,QSD]
+# [RewriteMap] color -> /wiki/docs/色-いわゆるカラー/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?color(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/色-いわゆるカラー/ [R=301,L,QSD]
+RewriteRule ^color(?:\.html)?$ /wiki/docs/色-いわゆるカラー/ [R=301,L,QSD]
+# [RewriteMap] algo_and_data_const -> /wiki/docs/アルゴリズムとデータ構造/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?algo_and_data_const(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/アルゴリズムとデータ構造/ [R=301,L,QSD]
+RewriteRule ^algo_and_data_const(?:\.html)?$ /wiki/docs/アルゴリズムとデータ構造/ [R=301,L,QSD]
+# [RewriteMap] network_course -> /wiki/docs/プログラマ的ネットワーク適当講座/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?network_course(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラマ的ネットワーク適当講座/ [R=301,L,QSD]
+RewriteRule ^network_course(?:\.html)?$ /wiki/docs/プログラマ的ネットワーク適当講座/ [R=301,L,QSD]
+# [RewriteMap] troll -> /wiki/docs/ネタ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?troll(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ネタ/ [R=301,L,QSD]
+RewriteRule ^troll(?:\.html)?$ /wiki/docs/ネタ/ [R=301,L,QSD]
+# [RewriteMap] giko_for_beginner -> /wiki/docs/ギコ猫の初心者VIPPERでも分かるシリーズ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?giko_for_beginner(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ギコ猫の初心者VIPPERでも分かるシリーズ/ [R=301,L,QSD]
+RewriteRule ^giko_for_beginner(?:\.html)?$ /wiki/docs/ギコ猫の初心者VIPPERでも分かるシリーズ/ [R=301,L,QSD]
+# [RewriteMap] vector -> /wiki/docs/ベクトル/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?vector(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ベクトル/ [R=301,L,QSD]
+RewriteRule ^vector(?:\.html)?$ /wiki/docs/ベクトル/ [R=301,L,QSD]
+# [RewriteMap] story_for_programmers -> /wiki/docs/マのネタ帳/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?story_for_programmers(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/マのネタ帳/ [R=301,L,QSD]
+RewriteRule ^story_for_programmers(?:\.html)?$ /wiki/docs/マのネタ帳/ [R=301,L,QSD]
+# [RewriteMap] onlinejudge -> /wiki/docs/オンラインジャッジ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?onlinejudge(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/オンラインジャッジ/ [R=301,L,QSD]
+RewriteRule ^onlinejudge(?:\.html)?$ /wiki/docs/オンラインジャッジ/ [R=301,L,QSD]
+# [RewriteMap] database -> /wiki/docs/データベース/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?database(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/データベース/ [R=301,L,QSD]
+RewriteRule ^database(?:\.html)?$ /wiki/docs/データベース/ [R=301,L,QSD]
+# [RewriteMap] codegolf -> /wiki/docs/code-golf入門/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?codegolf(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/code-golf入門/ [R=301,L,QSD]
+RewriteRule ^codegolf(?:\.html)?$ /wiki/docs/code-golf入門/ [R=301,L,QSD]
+# [RewriteMap] codegolf/c -> /wiki/docs/code-golf入門/C言語編/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?codegolf/c(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/code-golf入門/C言語編/ [R=301,L,QSD]
+RewriteRule ^codegolf/c(?:\.html)?$ /wiki/docs/code-golf入門/C言語編/ [R=301,L,QSD]
+# [RenameLog] HSP -> /wiki/docs/プログラミング言語/HSP/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?HSP(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/HSP/ [R=301,L,QSD]
+RewriteRule ^HSP(?:\.html)?$ /wiki/docs/プログラミング言語/HSP/ [R=301,L,QSD]
+# [RenameLog] プログラミング言語/Javascript -> /wiki/docs/プログラミング言語/JavaScript/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/Javascript(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/JavaScript/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/Javascript(?:\.html)?$ /wiki/docs/プログラミング言語/JavaScript/ [R=301,L,QSD]
+# [RenameLog] プログラミング言語/CSharp -> /wiki/docs/プログラミング言語/C-Sharp/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/CSharp(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/CSharp(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/ [R=301,L,QSD]
+# [RenameLog] F700isさんによるチュートリアル -> /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?F700isさんによるチュートリアル(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/ [R=301,L,QSD]
+RewriteRule ^F700isさんによるチュートリアル(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/ [R=301,L,QSD]
+# [RenameLog] 質問のしかた -> /wiki/docs/質問の仕方/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?質問のしかた(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/質問の仕方/ [R=301,L,QSD]
+RewriteRule ^質問のしかた(?:\.html)?$ /wiki/docs/質問の仕方/ [R=301,L,QSD]
+# [RenameLog] C Sharp/入門用簡単なGUIアプリ -> /wiki/docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?C(?:\s|\+|%20)Sharp/入門用簡単なGUIアプリ(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/ [R=301,L,QSD]
+RewriteRule ^C(?:\s|\+|%20)Sharp/入門用簡単なGUIアプリ(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/ [R=301,L,QSD]
+# [RenameLog] ＼(^o^)／ｵﾜﾀでもわかるC++ -> /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?＼\(\^o\^\)／ｵﾜﾀでもわかるC(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/ [R=301,L,QSD]
+RewriteRule ^＼\(\^o\^\)／ｵﾜﾀでもわかるC(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/ [R=301,L,QSD]
+# [RenameLog] プログラミング言語/Ruby/RubyInstall -> /wiki/docs/プログラミング言語/Ruby/インストール/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/Ruby/RubyInstall(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Ruby/インストール/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/Ruby/RubyInstall(?:\.html)?$ /wiki/docs/プログラミング言語/Ruby/インストール/ [R=301,L,QSD]
+# [RenameLog] プログラミング言語/Ruby/言語ハイライト -> /wiki/docs/プログラミング言語/Ruby/言語ダイジェスト/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/Ruby/言語ハイライト(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Ruby/言語ダイジェスト/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/Ruby/言語ハイライト(?:\.html)?$ /wiki/docs/プログラミング言語/Ruby/言語ダイジェスト/ [R=301,L,QSD]
+# [RenameLog] ギコ猫の初心者VIPPERでも分かる -> /wiki/docs/ギコ猫の初心者VIPPERでも分かるシリーズ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?ギコ猫の初心者VIPPERでも分かる(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ギコ猫の初心者VIPPERでも分かるシリーズ/ [R=301,L,QSD]
+RewriteRule ^ギコ猫の初心者VIPPERでも分かる(?:\.html)?$ /wiki/docs/ギコ猫の初心者VIPPERでも分かるシリーズ/ [R=301,L,QSD]
+# [RenameLog] ソフトウェア開発 (初級) -> /wiki/docs/俺流ソフトウェア開発-初級-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?ソフトウェア開発(?:\s|\+|%20)\(初級\)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/俺流ソフトウェア開発-初級-/ [R=301,L,QSD]
+RewriteRule ^ソフトウェア開発(?:\s|\+|%20)\(初級\)(?:\.html)?$ /wiki/docs/俺流ソフトウェア開発-初級-/ [R=301,L,QSD]
+# [RenameLog] スレ住人に対し『カス』、『市ね』 -> /wiki/docs/ネタ/スレ住人に対し-カス---市ね-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?スレ住人に対し『カス』、『市ね』(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ネタ/スレ住人に対し-カス---市ね-/ [R=301,L,QSD]
+RewriteRule ^スレ住人に対し『カス』、『市ね』(?:\.html)?$ /wiki/docs/ネタ/スレ住人に対し-カス---市ね-/ [R=301,L,QSD]
+# [RenameLog] AppleScript -> /wiki/docs/プログラミング言語/AppleScript/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?AppleScript(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/AppleScript/ [R=301,L,QSD]
+RewriteRule ^AppleScript(?:\.html)?$ /wiki/docs/プログラミング言語/AppleScript/ [R=301,L,QSD]
+# [RenameLog] プログラミング言語/C/素数判定 -> /wiki/docs/練習問題/解答例/素数判定/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C/素数判定(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/素数判定/C/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C/素数判定(?:\.html)?$ /wiki/docs/練習問題/解答例/素数判定/C/ [R=301,L,QSD]
+# [RenameLog] 練習問題/回答例 -> /wiki/docs/練習問題/解答例/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/回答例(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/ [R=301,L,QSD]
+RewriteRule ^練習問題/回答例(?:\.html)?$ /wiki/docs/練習問題/解答例/ [R=301,L,QSD]
+# [RenameLog] 初心者用課題/例/素数を求める/C -> /wiki/docs/練習問題/解答例/素数を求める/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/素数を求める/C(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/素数を求める/C/ [R=301,L,QSD]
+RewriteRule ^初心者用課題/例/素数を求める/C(?:\.html)?$ /wiki/docs/練習問題/解答例/素数を求める/C/ [R=301,L,QSD]
+# [RenameLog] 初心者用課題/例/素数を求める/Java -> /wiki/docs/練習問題/解答例/素数を求める/Java/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/素数を求める/Java(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/素数を求める/Java/ [R=301,L,QSD]
+RewriteRule ^初心者用課題/例/素数を求める/Java(?:\.html)?$ /wiki/docs/練習問題/解答例/素数を求める/Java/ [R=301,L,QSD]
+# [RenameLog] 初心者用課題/例/うるう年測定/C -> /wiki/docs/練習問題/解答例/うるう年測定/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/うるう年測定/C(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/うるう年測定/C/ [R=301,L,QSD]
+RewriteRule ^初心者用課題/例/うるう年測定/C(?:\.html)?$ /wiki/docs/練習問題/解答例/うるう年測定/C/ [R=301,L,QSD]
+# [RenameLog] 初心者用課題/例/Caesar暗号解読/C -> /wiki/docs/練習問題/解答例/Caesar暗号解読/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/Caesar暗号解読/C(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/Caesar暗号解読/C/ [R=301,L,QSD]
+RewriteRule ^初心者用課題/例/Caesar暗号解読/C(?:\.html)?$ /wiki/docs/練習問題/解答例/Caesar暗号解読/C/ [R=301,L,QSD]
+# [RenameLog] 初心者用課題/例/カレンダー出力/C -> /wiki/docs/練習問題/解答例/カレンダー出力/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/カレンダー出力/C(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/カレンダー出力/C/ [R=301,L,QSD]
+RewriteRule ^初心者用課題/例/カレンダー出力/C(?:\.html)?$ /wiki/docs/練習問題/解答例/カレンダー出力/C/ [R=301,L,QSD]
+# [RenameLog] 初心者用課題/例/線形合同法/C -> /wiki/docs/練習問題/解答例/線形合同法/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/線形合同法/C(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/線形合同法/C/ [R=301,L,QSD]
+RewriteRule ^初心者用課題/例/線形合同法/C(?:\.html)?$ /wiki/docs/練習問題/解答例/線形合同法/C/ [R=301,L,QSD]
+# [RenameLog] 練習問題/転置行列/C++ -> /wiki/docs/練習問題/解答例/転置行列/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
+RewriteRule ^練習問題/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
+# [RenameLog] 初心者用課題/例/ハノイの塔/Prolog -> /wiki/docs/練習問題/解答例/ハノイの塔/Prolog/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/ハノイの塔/Prolog(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/ハノイの塔/Prolog/ [R=301,L,QSD]
+RewriteRule ^初心者用課題/例/ハノイの塔/Prolog(?:\.html)?$ /wiki/docs/練習問題/解答例/ハノイの塔/Prolog/ [R=301,L,QSD]
+# [RenameLog] 練習問題/ハノイの塔/C++ -> /wiki/docs/練習問題/解答例/ハノイの塔/C--/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/ハノイの塔/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/ハノイの塔/C--/ [R=301,L,QSD]
+RewriteRule ^練習問題/ハノイの塔/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/ハノイの塔/C--/ [R=301,L,QSD]
+# [RenameLog] 初心者用課題/例/フィボナッチ数列1/C -> /wiki/docs/練習問題/解答例/フィボナッチ数列1/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?初心者用課題/例/フィボナッチ数列1/C(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/フィボナッチ数列1/C/ [R=301,L,QSD]
+RewriteRule ^初心者用課題/例/フィボナッチ数列1/C(?:\.html)?$ /wiki/docs/練習問題/解答例/フィボナッチ数列1/C/ [R=301,L,QSD]
+# [RenameLog] Objective-C -> /wiki/docs/プログラミング言語/Objective-C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Objective-C(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Objective-C/ [R=301,L,QSD]
+RewriteRule ^Objective-C(?:\.html)?$ /wiki/docs/プログラミング言語/Objective-C/ [R=301,L,QSD]
+# [RenameLog] HTMLとCSS -> /wiki/docs/プログラミング言語/HTMLとCSS/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?HTMLとCSS(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/HTMLとCSS/ [R=301,L,QSD]
+RewriteRule ^HTMLとCSS(?:\.html)?$ /wiki/docs/プログラミング言語/HTMLとCSS/ [R=301,L,QSD]
+# [RenameLog] Brainfuck -> /wiki/docs/プログラミング言語/Brainfuck/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Brainfuck(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Brainfuck/ [R=301,L,QSD]
+RewriteRule ^Brainfuck(?:\.html)?$ /wiki/docs/プログラミング言語/Brainfuck/ [R=301,L,QSD]
+# [RenameLog] CUDA -> /wiki/docs/プログラミング言語/CUDA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?CUDA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/CUDA/ [R=301,L,QSD]
+RewriteRule ^CUDA(?:\.html)?$ /wiki/docs/プログラミング言語/CUDA/ [R=301,L,QSD]
+# [RenameLog] ShellScript -> /wiki/docs/プログラミング言語/ShellScript/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?ShellScript(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/ShellScript/ [R=301,L,QSD]
+RewriteRule ^ShellScript(?:\.html)?$ /wiki/docs/プログラミング言語/ShellScript/ [R=301,L,QSD]
+# [RenameLog] code golf入門(C言語編) -> /wiki/docs/code-golf入門/C言語編/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?code(?:\s|\+|%20)golf入門\(C言語編\)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/code-golf入門/C言語編/ [R=301,L,QSD]
+RewriteRule ^code(?:\s|\+|%20)golf入門\(C言語編\)(?:\.html)?$ /wiki/docs/code-golf入門/C言語編/ [R=301,L,QSD]
+# [RenameLog] search_tech -> /wiki/docs/検索テクニック/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?search_tech(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/検索テクニック/ [R=301,L,QSD]
+RewriteRule ^search_tech(?:\.html)?$ /wiki/docs/検索テクニック/ [R=301,L,QSD]
+# [RenameLog] 真似してはイケナイ基本形 -> /wiki/docs/C言語---真似してはイケナイ基本形/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?真似してはイケナイ基本形(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/C言語---真似してはイケナイ基本形/ [R=301,L,QSD]
+RewriteRule ^真似してはイケナイ基本形(?:\.html)?$ /wiki/docs/C言語---真似してはイケナイ基本形/ [R=301,L,QSD]
+# [RenameLog] C言語/基本形 -> /wiki/docs/C言語---真似してはイケナイ基本形/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?C言語/基本形(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/C言語---真似してはイケナイ基本形/ [R=301,L,QSD]
+RewriteRule ^C言語/基本形(?:\.html)?$ /wiki/docs/C言語---真似してはイケナイ基本形/ [R=301,L,QSD]
+# [RenameLog] 2ch -> /wiki/docs/専ブラ開発への道/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?2ch(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/専ブラ開発への道/ [R=301,L,QSD]
+RewriteRule ^2ch(?:\.html)?$ /wiki/docs/専ブラ開発への道/ [R=301,L,QSD]
+# [RenameLog] RSS_read -> /wiki/docs/おすすめフィード/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?RSS_read(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/おすすめフィード/ [R=301,L,QSD]
+RewriteRule ^RSS_read(?:\.html)?$ /wiki/docs/おすすめフィード/ [R=301,L,QSD]
+# [RenameLog] C版 -> /wiki/docs/練習問題/解答例/転置行列/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?C版(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
+RewriteRule ^C版(?:\.html)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
+# [RenameLog] ネタ/味噌 -> /wiki/docs/ネタ/味噌汁シミュレーション/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?ネタ/味噌(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ネタ/味噌汁シミュレーション/ [R=301,L,QSD]
+RewriteRule ^ネタ/味噌(?:\.html)?$ /wiki/docs/ネタ/味噌汁シミュレーション/ [R=301,L,QSD]
+# [RenameLog] ネタ/味噌シミュレーション -> /wiki/docs/ネタ/味噌汁シミュレーション/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?ネタ/味噌シミュレーション(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ネタ/味噌汁シミュレーション/ [R=301,L,QSD]
+RewriteRule ^ネタ/味噌シミュレーション(?:\.html)?$ /wiki/docs/ネタ/味噌汁シミュレーション/ [R=301,L,QSD]
+# [RenameLog] シェルスクリプト版 -> /wiki/docs/練習問題/解答例/FizzBuzz/ShellScript/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?シェルスクリプト版(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/FizzBuzz/ShellScript/ [R=301,L,QSD]
+RewriteRule ^シェルスクリプト版(?:\.html)?$ /wiki/docs/練習問題/解答例/FizzBuzz/ShellScript/ [R=301,L,QSD]
+# [RenameLog] 練習問題/解答例/FizzBuzz/lisp.html -> /wiki/docs/練習問題/解答例/FizzBuzz/lisp/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/FizzBuzz/lisp\.html(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/FizzBuzz/lisp/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/FizzBuzz/lisp\.html(?:\.html)?$ /wiki/docs/練習問題/解答例/FizzBuzz/lisp/ [R=301,L,QSD]
+# [RenameLog] プログラミング言語/C Sharp/F700isさんによるCSharpチュートリアル -> /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\s|\+|%20)Sharp/F700isさんによるCSharpチュートリアル(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp/F700isさんによるCSharpチュートリアル(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/ [R=301,L,QSD]
+# [SlugDiff] Ｅｘｃｅｌ VBA -> /wiki/docs/Ｅｘｃｅｌ-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Ｅｘｃｅｌ(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/Ｅｘｃｅｌ-VBA/ [R=301,L,QSD]
+RewriteRule ^Ｅｘｃｅｌ(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/Ｅｘｃｅｌ-VBA/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C Sharp/C++やJavaから見るC Sharp -> /wiki/docs/プログラミング言語/C-Sharp/C--やJavaから見るC-Sharp/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\s|\+|%20)Sharp/C(?:\+|%2B)(?:\+|%2B)やJavaから見るC(?:\s|\+|%20)Sharp(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/C--やJavaから見るC-Sharp/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp/C(?:\+|%2B)(?:\+|%2B)やJavaから見るC(?:\s|\+|%20)Sharp(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/C--やJavaから見るC-Sharp/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C+Sharp/CPU使用率メータ -> /wiki/docs/プログラミング言語/C-Sharp/CPU使用率メータ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\+|%2B)Sharp/CPU使用率メータ(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/CPU使用率メータ/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\+|%2B)Sharp/CPU使用率メータ(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/CPU使用率メータ/ [R=301,L,QSD]
+# [SlugDiff] Access VBA -> /wiki/docs/Access-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Access(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/Access-VBA/ [R=301,L,QSD]
+RewriteRule ^Access(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/Access-VBA/ [R=301,L,QSD]
+# [SlugDiff] 解答例/FizzBuzz/Excel VBA -> /wiki/docs/解答例/FizzBuzz/Excel-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?解答例/FizzBuzz/Excel(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/解答例/FizzBuzz/Excel-VBA/ [R=301,L,QSD]
+RewriteRule ^解答例/FizzBuzz/Excel(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/解答例/FizzBuzz/Excel-VBA/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/素数判定/C++(better C) -> /wiki/docs/練習問題/解答例/素数判定/C---better-C-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/素数判定/C(?:\+|%2B)(?:\+|%2B)\(better(?:\s|\+|%20)C\)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/素数判定/C---better-C-/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/素数判定/C(?:\+|%2B)(?:\+|%2B)\(better(?:\s|\+|%20)C\)(?:\.html)?$ /wiki/docs/練習問題/解答例/素数判定/C---better-C-/ [R=301,L,QSD]
+# [SlugDiff] 練習問題(アルゴリズム編)/解答例/後置記法/Python -> /wiki/docs/練習問題-アルゴリズム編-/解答例/後置記法/Python/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題\(アルゴリズム編\)/解答例/後置記法/Python(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題-アルゴリズム編-/解答例/後置記法/Python/ [R=301,L,QSD]
+RewriteRule ^練習問題\(アルゴリズム編\)/解答例/後置記法/Python(?:\.html)?$ /wiki/docs/練習問題-アルゴリズム編-/解答例/後置記法/Python/ [R=301,L,QSD]
+# [SlugDiff] C言語 - よくありそうな質問 -> /wiki/docs/C言語---よくありそうな質問/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?C言語(?:\s|\+|%20)-(?:\s|\+|%20)よくありそうな質問(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/C言語---よくありそうな質問/ [R=301,L,QSD]
+RewriteRule ^C言語(?:\s|\+|%20)-(?:\s|\+|%20)よくありそうな質問(?:\.html)?$ /wiki/docs/C言語---よくありそうな質問/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/PHP/PHPを始めるには(ゆとり専用) -> /wiki/docs/プログラミング言語/PHP/PHPを始めるには-ゆとり専用-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/PHP/PHPを始めるには\(ゆとり専用\)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/PHP/PHPを始めるには-ゆとり専用-/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/PHP/PHPを始めるには\(ゆとり専用\)(?:\.html)?$ /wiki/docs/プログラミング言語/PHP/PHPを始めるには-ゆとり専用-/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C++ -> /wiki/docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C--/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C--/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C--/ [R=301,L,QSD]
+# [SlugDiff] Win32 リソースエディタ -> /wiki/docs/Win32-リソースエディタ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Win32(?:\s|\+|%20)リソースエディタ(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/Win32-リソースエディタ/ [R=301,L,QSD]
+RewriteRule ^Win32(?:\s|\+|%20)リソースエディタ(?:\.html)?$ /wiki/docs/Win32-リソースエディタ/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C Sharp/入門用簡単なGUIアプリ -> /wiki/docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\s|\+|%20)Sharp/入門用簡単なGUIアプリ(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp/入門用簡単なGUIアプリ(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/入門用簡単なGUIアプリ/ [R=301,L,QSD]
+# [SlugDiff] 解答例/世界のナベアツ問題/Excel VBA -> /wiki/docs/解答例/世界のナベアツ問題/Excel-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?解答例/世界のナベアツ問題/Excel(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/解答例/世界のナベアツ問題/Excel-VBA/ [R=301,L,QSD]
+RewriteRule ^解答例/世界のナベアツ問題/Excel(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/解答例/世界のナベアツ問題/Excel-VBA/ [R=301,L,QSD]
+# [SlugDiff] C言語 - 真似してはイケナイ基本形 -> /wiki/docs/C言語---真似してはイケナイ基本形/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?C言語(?:\s|\+|%20)-(?:\s|\+|%20)真似してはイケナイ基本形(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/C言語---真似してはイケナイ基本形/ [R=301,L,QSD]
+RewriteRule ^C言語(?:\s|\+|%20)-(?:\s|\+|%20)真似してはイケナイ基本形(?:\.html)?$ /wiki/docs/C言語---真似してはイケナイ基本形/ [R=301,L,QSD]
+# [SlugDiff] 練習問題(アルゴリズム編)/解答例/後置記法/Ruby -> /wiki/docs/練習問題-アルゴリズム編-/解答例/後置記法/Ruby/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題\(アルゴリズム編\)/解答例/後置記法/Ruby(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題-アルゴリズム編-/解答例/後置記法/Ruby/ [R=301,L,QSD]
+RewriteRule ^練習問題\(アルゴリズム編\)/解答例/後置記法/Ruby(?:\.html)?$ /wiki/docs/練習問題-アルゴリズム編-/解答例/後置記法/Ruby/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/干支を求めるプログラム/Excel VBA -> /wiki/docs/練習問題/解答例/干支を求めるプログラム/Excel-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/干支を求めるプログラム/Excel(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/干支を求めるプログラム/Excel-VBA/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/干支を求めるプログラム/Excel(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/練習問題/解答例/干支を求めるプログラム/Excel-VBA/ [R=301,L,QSD]
+# [SlugDiff] 色、いわゆるカラー -> /wiki/docs/色-いわゆるカラー/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?色、いわゆるカラー(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/色-いわゆるカラー/ [R=301,L,QSD]
+RewriteRule ^色、いわゆるカラー(?:\.html)?$ /wiki/docs/色-いわゆるカラー/ [R=301,L,QSD]
+# [SlugDiff] プログラミングスレ in VIP -> /wiki/docs/プログラミングスレ-in-VIP/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミングスレ(?:\s|\+|%20)in(?:\s|\+|%20)VIP(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミングスレ-in-VIP/ [R=301,L,QSD]
+RewriteRule ^プログラミングスレ(?:\s|\+|%20)in(?:\s|\+|%20)VIP(?:\.html)?$ /wiki/docs/プログラミングスレ-in-VIP/ [R=301,L,QSD]
+# [SlugDiff] ネタ/スレ住人に対し『カス』、『市ね』 -> /wiki/docs/ネタ/スレ住人に対し-カス---市ね-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?ネタ/スレ住人に対し『カス』、『市ね』(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ネタ/スレ住人に対し-カス---市ね-/ [R=301,L,QSD]
+RewriteRule ^ネタ/スレ住人に対し『カス』、『市ね』(?:\.html)?$ /wiki/docs/ネタ/スレ住人に対し-カス---市ね-/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語 / C Sharp / テレホマンマスコット -> /wiki/docs/プログラミング言語-/-C-Sharp-/-テレホマンマスコット/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語(?:\s|\+|%20)/(?:\s|\+|%20)C(?:\s|\+|%20)Sharp(?:\s|\+|%20)/(?:\s|\+|%20)テレホマンマスコット(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語-/-C-Sharp-/-テレホマンマスコット/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語(?:\s|\+|%20)/(?:\s|\+|%20)C(?:\s|\+|%20)Sharp(?:\s|\+|%20)/(?:\s|\+|%20)テレホマンマスコット(?:\.html)?$ /wiki/docs/プログラミング言語-/-C-Sharp-/-テレホマンマスコット/ [R=301,L,QSD]
+# [SlugDiff] 解答例/二次方程式の解/Excel VBA -> /wiki/docs/解答例/二次方程式の解/Excel-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?解答例/二次方程式の解/Excel(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/解答例/二次方程式の解/Excel-VBA/ [R=301,L,QSD]
+RewriteRule ^解答例/二次方程式の解/Excel(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/解答例/二次方程式の解/Excel-VBA/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/FizzBuzz/C++ -> /wiki/docs/練習問題/解答例/FizzBuzz/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/FizzBuzz/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/FizzBuzz/C/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/FizzBuzz/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/FizzBuzz/C/ [R=301,L,QSD]
+# [SlugDiff] 練習問題(アルゴリズム編) -> /wiki/docs/練習問題-アルゴリズム編-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題\(アルゴリズム編\)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題-アルゴリズム編-/ [R=301,L,QSD]
+RewriteRule ^練習問題\(アルゴリズム編\)(?:\.html)?$ /wiki/docs/練習問題-アルゴリズム編-/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/Hit and Blow/Python -> /wiki/docs/練習問題/解答例/Hit-and-Blow/Python/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/Hit(?:\s|\+|%20)and(?:\s|\+|%20)Blow/Python(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/Hit-and-Blow/Python/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/Hit(?:\s|\+|%20)and(?:\s|\+|%20)Blow/Python(?:\.html)?$ /wiki/docs/練習問題/解答例/Hit-and-Blow/Python/ [R=301,L,QSD]
+# [SlugDiff] code golf入門 -> /wiki/docs/code-golf入門/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?code(?:\s|\+|%20)golf入門(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/code-golf入門/ [R=301,L,QSD]
+RewriteRule ^code(?:\s|\+|%20)golf入門(?:\.html)?$ /wiki/docs/code-golf入門/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/連立方程式を解く/C++ -> /wiki/docs/練習問題/解答例/連立方程式を解く/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/連立方程式を解く/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/連立方程式を解く/C/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/連立方程式を解く/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/連立方程式を解く/C/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C Sharp/CSharpチュートリアル -> /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\s|\+|%20)Sharp/CSharpチュートリアル(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp/CSharpチュートリアル(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/CSharpチュートリアル/ [R=301,L,QSD]
+# [SlugDiff] 解答例/転置行列/Excel VBA -> /wiki/docs/解答例/転置行列/Excel-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?解答例/転置行列/Excel(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/解答例/転置行列/Excel-VBA/ [R=301,L,QSD]
+RewriteRule ^解答例/転置行列/Excel(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/解答例/転置行列/Excel-VBA/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C Sharp/アナログ時計を作ろう -> /wiki/docs/プログラミング言語/C-Sharp/アナログ時計を作ろう/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\s|\+|%20)Sharp/アナログ時計を作ろう(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/アナログ時計を作ろう/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp/アナログ時計を作ろう(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/アナログ時計を作ろう/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/FizzBuzz/C++(better C) -> /wiki/docs/練習問題/解答例/FizzBuzz/C---better-C-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/FizzBuzz/C(?:\+|%2B)(?:\+|%2B)\(better(?:\s|\+|%20)C\)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/FizzBuzz/C---better-C-/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/FizzBuzz/C(?:\+|%2B)(?:\+|%2B)\(better(?:\s|\+|%20)C\)(?:\.html)?$ /wiki/docs/練習問題/解答例/FizzBuzz/C---better-C-/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C Sharp/CPU使用率メータ -> /wiki/docs/プログラミング言語/C-Sharp/CPU使用率メータ/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\s|\+|%20)Sharp/CPU使用率メータ(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/CPU使用率メータ/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp/CPU使用率メータ(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/CPU使用率メータ/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/転置行列/C++ -> /wiki/docs/練習問題/解答例/転置行列/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/転置行列/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/転置行列/C/ [R=301,L,QSD]
+# [SlugDiff] Template Method -> /wiki/docs/Template-Method/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Template(?:\s|\+|%20)Method(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/Template-Method/ [R=301,L,QSD]
+RewriteRule ^Template(?:\s|\+|%20)Method(?:\.html)?$ /wiki/docs/Template-Method/ [R=301,L,QSD]
+# [SlugDiff] C++初心者ガイド -> /wiki/docs/C--初心者ガイド/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?C(?:\+|%2B)(?:\+|%2B)初心者ガイド(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/C--初心者ガイド/ [R=301,L,QSD]
+RewriteRule ^C(?:\+|%2B)(?:\+|%2B)初心者ガイド(?:\.html)?$ /wiki/docs/C--初心者ガイド/ [R=301,L,QSD]
+# [SlugDiff] どの言語を学ぶべき？ -> /wiki/docs/どの言語を学ぶべき-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?どの言語を学ぶべき？(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/どの言語を学ぶべき-/ [R=301,L,QSD]
+RewriteRule ^どの言語を学ぶべき？(?:\.html)?$ /wiki/docs/どの言語を学ぶべき-/ [R=301,L,QSD]
+# [SlugDiff] 解答例/線形合同法/Excel VBA -> /wiki/docs/解答例/線形合同法/Excel-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?解答例/線形合同法/Excel(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/解答例/線形合同法/Excel-VBA/ [R=301,L,QSD]
+RewriteRule ^解答例/線形合同法/Excel(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/解答例/線形合同法/Excel-VBA/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/平方根/C++(better C) -> /wiki/docs/練習問題/解答例/平方根/C---better-C-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/平方根/C(?:\+|%2B)(?:\+|%2B)\(better(?:\s|\+|%20)C\)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/平方根/C---better-C-/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/平方根/C(?:\+|%2B)(?:\+|%2B)\(better(?:\s|\+|%20)C\)(?:\.html)?$ /wiki/docs/練習問題/解答例/平方根/C---better-C-/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/世界のナベアツ問題/Common Lisp -> /wiki/docs/練習問題/解答例/世界のナベアツ問題/Common-Lisp/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/世界のナベアツ問題/Common(?:\s|\+|%20)Lisp(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/世界のナベアツ問題/Common-Lisp/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/世界のナベアツ問題/Common(?:\s|\+|%20)Lisp(?:\.html)?$ /wiki/docs/練習問題/解答例/世界のナベアツ問題/Common-Lisp/ [R=301,L,QSD]
+# [SlugDiff] •練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C -> /wiki/docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C--/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?•練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C--/ [R=301,L,QSD]
+RewriteRule ^•練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C(?:\.html)?$ /wiki/docs/練習問題/解答例/ひらがな2文字をランダムで出力するプログラム/C--/ [R=301,L,QSD]
+# [SlugDiff] プログラミングスレまとめ in VIP -> /wiki/docs/プログラミングスレまとめ-in-VIP/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミングスレまとめ(?:\s|\+|%20)in(?:\s|\+|%20)VIP(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミングスレまとめ-in-VIP/ [R=301,L,QSD]
+RewriteRule ^プログラミングスレまとめ(?:\s|\+|%20)in(?:\s|\+|%20)VIP(?:\.html)?$ /wiki/docs/プログラミングスレまとめ-in-VIP/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C Sharp/IDEなんていらない -> /wiki/docs/プログラミング言語/C-Sharp/IDEなんていらない/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\s|\+|%20)Sharp/IDEなんていらない(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/IDEなんていらない/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp/IDEなんていらない(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/IDEなんていらない/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C++/＼(^o^)／ｵﾜﾀでもわかるC++ -> /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\+|%2B)(?:\+|%2B)/＼\(\^o\^\)／ｵﾜﾀでもわかるC(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\+|%2B)(?:\+|%2B)/＼\(\^o\^\)／ｵﾜﾀでもわかるC(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/プログラミング言語/C--/---o---ｵﾜﾀでもわかるC--/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/素数判定/C++ -> /wiki/docs/練習問題/解答例/素数判定/C/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/素数判定/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/素数判定/C/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/素数判定/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/素数判定/C/ [R=301,L,QSD]
+# [SlugDiff] オープンソースマガジン連載「ハッカー養成塾」 -> /wiki/docs/オープンソースマガジン連載-ハッカー養成塾-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?オープンソースマガジン連載「ハッカー養成塾」(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/オープンソースマガジン連載-ハッカー養成塾-/ [R=301,L,QSD]
+RewriteRule ^オープンソースマガジン連載「ハッカー養成塾」(?:\.html)?$ /wiki/docs/オープンソースマガジン連載-ハッカー養成塾-/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C Sharp -> /wiki/docs/プログラミング言語/C-Sharp/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\s|\+|%20)Sharp(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C-Sharp/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\s|\+|%20)Sharp(?:\.html)?$ /wiki/docs/プログラミング言語/C-Sharp/ [R=301,L,QSD]
+# [SlugDiff] はじめてなの…やさしくして… -> /wiki/docs/はじめてなの-やさしくして-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?はじめてなの…やさしくして…(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/はじめてなの-やさしくして-/ [R=301,L,QSD]
+RewriteRule ^はじめてなの…やさしくして…(?:\.html)?$ /wiki/docs/はじめてなの-やさしくして-/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/C++ -> /wiki/docs/プログラミング言語/C--/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/C--/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/プログラミング言語/C--/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/素数判定/Ｅｘｃｅｌ VBA -> /wiki/docs/練習問題/解答例/素数判定/Ｅｘｃｅｌ-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/素数判定/Ｅｘｃｅｌ(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/素数判定/Ｅｘｃｅｌ-VBA/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/素数判定/Ｅｘｃｅｌ(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/練習問題/解答例/素数判定/Ｅｘｃｅｌ-VBA/ [R=301,L,QSD]
+# [SlugDiff] Software Reverse Engineering -> /wiki/docs/Software-Reverse-Engineering/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Software(?:\s|\+|%20)Reverse(?:\s|\+|%20)Engineering(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/Software-Reverse-Engineering/ [R=301,L,QSD]
+RewriteRule ^Software(?:\s|\+|%20)Reverse(?:\s|\+|%20)Engineering(?:\.html)?$ /wiki/docs/Software-Reverse-Engineering/ [R=301,L,QSD]
+# [SlugDiff] C Sharp /C Sharp/チュートリアル/コンソール編 -> /wiki/docs/C-Sharp-/C-Sharp/チュートリアル/コンソール編/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?C(?:\s|\+|%20)Sharp(?:\s|\+|%20)/C(?:\s|\+|%20)Sharp/チュートリアル/コンソール編(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/C-Sharp-/C-Sharp/チュートリアル/コンソール編/ [R=301,L,QSD]
+RewriteRule ^C(?:\s|\+|%20)Sharp(?:\s|\+|%20)/C(?:\s|\+|%20)Sharp/チュートリアル/コンソール編(?:\.html)?$ /wiki/docs/C-Sharp-/C-Sharp/チュートリアル/コンソール編/ [R=301,L,QSD]
+# [SlugDiff] Abstract Factory -> /wiki/docs/Abstract-Factory/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Abstract(?:\s|\+|%20)Factory(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/Abstract-Factory/ [R=301,L,QSD]
+RewriteRule ^Abstract(?:\s|\+|%20)Factory(?:\.html)?$ /wiki/docs/Abstract-Factory/ [R=301,L,QSD]
+# [SlugDiff] 俺流ソフトウェア開発 (初級) -> /wiki/docs/俺流ソフトウェア開発-初級-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?俺流ソフトウェア開発(?:\s|\+|%20)\(初級\)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/俺流ソフトウェア開発-初級-/ [R=301,L,QSD]
+RewriteRule ^俺流ソフトウェア開発(?:\s|\+|%20)\(初級\)(?:\.html)?$ /wiki/docs/俺流ソフトウェア開発-初級-/ [R=301,L,QSD]
+# [SlugDiff] code golf入門/C言語編 -> /wiki/docs/code-golf入門/C言語編/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?code(?:\s|\+|%20)golf入門/C言語編(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/code-golf入門/C言語編/ [R=301,L,QSD]
+RewriteRule ^code(?:\s|\+|%20)golf入門/C言語編(?:\.html)?$ /wiki/docs/code-golf入門/C言語編/ [R=301,L,QSD]
+# [SlugDiff] VIP的物理講座（初級編） -> /wiki/docs/VIP的物理講座-初級編-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?VIP的物理講座（初級編）(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/VIP的物理講座-初級編-/ [R=301,L,QSD]
+RewriteRule ^VIP的物理講座（初級編）(?:\.html)?$ /wiki/docs/VIP的物理講座-初級編-/ [R=301,L,QSD]
+# [SlugDiff] ポインタ(C,C++) -> /wiki/docs/ポインタ-C-C---/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?ポインタ\(C,C(?:\+|%2B)(?:\+|%2B)\)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/ポインタ-C-C---/ [R=301,L,QSD]
+RewriteRule ^ポインタ\(C,C(?:\+|%2B)(?:\+|%2B)\)(?:\.html)?$ /wiki/docs/ポインタ-C-C---/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/Free Pascal -> /wiki/docs/プログラミング言語/Free-Pascal/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/Free(?:\s|\+|%20)Pascal(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Free-Pascal/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/Free(?:\s|\+|%20)Pascal(?:\.html)?$ /wiki/docs/プログラミング言語/Free-Pascal/ [R=301,L,QSD]
+# [SlugDiff] 文字コードとは何か（入門編） -> /wiki/docs/文字コードとは何か-入門編-/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?文字コードとは何か（入門編）(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/文字コードとは何か-入門編-/ [R=301,L,QSD]
+RewriteRule ^文字コードとは何か（入門編）(?:\.html)?$ /wiki/docs/文字コードとは何か-入門編-/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/Objective-C/Property List -> /wiki/docs/プログラミング言語/Objective-C/Property-List/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/Objective-C/Property(?:\s|\+|%20)List(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/Objective-C/Property-List/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/Objective-C/Property(?:\s|\+|%20)List(?:\.html)?$ /wiki/docs/プログラミング言語/Objective-C/Property-List/ [R=301,L,QSD]
+# [SlugDiff] プログラミング言語/VB.NET -> /wiki/docs/プログラミング言語/VB-NET/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?プログラミング言語/VB\.NET(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/プログラミング言語/VB-NET/ [R=301,L,QSD]
+RewriteRule ^プログラミング言語/VB\.NET(?:\.html)?$ /wiki/docs/プログラミング言語/VB-NET/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/ハノイの塔/C++ -> /wiki/docs/練習問題/解答例/ハノイの塔/C--/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/ハノイの塔/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/ハノイの塔/C--/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/ハノイの塔/C(?:\+|%2B)(?:\+|%2B)(?:\.html)?$ /wiki/docs/練習問題/解答例/ハノイの塔/C--/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/星座を求めるプログラム/Excel VBA -> /wiki/docs/練習問題/解答例/星座を求めるプログラム/Excel-VBA/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/星座を求めるプログラム/Excel(?:\s|\+|%20)VBA(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/星座を求めるプログラム/Excel-VBA/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/星座を求めるプログラム/Excel(?:\s|\+|%20)VBA(?:\.html)?$ /wiki/docs/練習問題/解答例/星座を求めるプログラム/Excel-VBA/ [R=301,L,QSD]
+# [SlugDiff] Common Lisp -> /wiki/docs/Common-Lisp/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?Common(?:\s|\+|%20)Lisp(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/Common-Lisp/ [R=301,L,QSD]
+RewriteRule ^Common(?:\s|\+|%20)Lisp(?:\.html)?$ /wiki/docs/Common-Lisp/ [R=301,L,QSD]
+# [SlugDiff] 練習問題/解答例/C++11/練習問題解答例 -> /wiki/docs/練習問題/解答例/C--11/練習問題解答例/
+RewriteCond %{QUERY_STRING} ^(?:(?:plugin|cmd)=read&(?:amp;)?page=)?練習問題/解答例/C(?:\+|%2B)(?:\+|%2B)11/練習問題解答例(?:\.html)?$ [NC]
+RewriteRule ^(?:index\.php)?$ /wiki/docs/練習問題/解答例/C--11/練習問題解答例/ [R=301,L,QSD]
+RewriteRule ^練習問題/解答例/C(?:\+|%2B)(?:\+|%2B)11/練習問題解答例(?:\.html)?$ /wiki/docs/練習問題/解答例/C--11/練習問題解答例/ [R=301,L,QSD]
+
+# ----------------------------------------------------------------------
+# 5. 汎用フォールバック: その他の .html パスリクエスト
+# (例: /wiki/専ブラ開発への道.html -> /wiki/docs/専ブラ開発への道/)
+# ----------------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(?!docs/|categories/|tags/|assets/|katex/|icons/|asciinema/|index\.html$|404\.html$)(.+?)\.html$ /wiki/docs/$1/ [R=301,L,QSD]
+
+# ----------------------------------------------------------------------
+# 6. 汎用フォールバック: その他のクエリ文字列リクエスト (?ページ名)
+# ----------------------------------------------------------------------
+RewriteCond %{QUERY_STRING} ^(?:plugin|cmd)=read&(?:amp;)?page=([^&]+) [NC,OR]
+RewriteCond %{QUERY_STRING} ^page=([^&]+) [NC,OR]
 RewriteCond %{QUERY_STRING} ^([^&=]+?)(?:\.html)?$
 RewriteRule ^(?:index\.php)?$ docs/%1/ [R=301,NE,QSD,L]
 
-# index.php へのクエリなしアクセスをトップへリダイレクト
+# ----------------------------------------------------------------------
+# 7. クエリなしの index.php はルートへ
+# ----------------------------------------------------------------------
 RewriteCond %{QUERY_STRING} ^$
 RewriteRule ^index\.php$ /wiki/ [R=301,L]
