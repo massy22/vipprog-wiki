@@ -944,7 +944,7 @@ draft: false
 - [結構若くにしてプログラミングを極めた](http://hibari.2ch.net/test/read.cgi/news4vip/1286292531/)
 - [プログラミングスレ](http://hibari.2ch.net/test/read.cgi/news4vip/1286372031/)
 - [プログラミングスレが見つからない・・・](http://hibari.2ch.net/test/read.cgi/news4vip/1286450334/)
-- [プログラミングスレ　[[ f]いいね！]{6]　　[ﾇ ツイートする]{35]](http://hibari.2ch.net/test/read.cgi/news4vip/1286546902/)
+- [プログラミングスレ　\[\[ f\]いいね！\]{6\]　　\[ﾇ ツイートする\]{35\]](http://hibari.2ch.net/test/read.cgi/news4vip/1286546902/)
 - [ノーベル賞から程遠いアマグラマによるプログラミングスレ](http://hibari.2ch.net/test/read.cgi/news4vip/1286713799/)
 - [プログラミング&lt;==&gt;スレッド](http://hibari.2ch.net/test/read.cgi/news4vip/1286779200/)
 - [プログラミングスレ](http://hibari.2ch.net/test/read.cgi/news4vip/1286920491//)
@@ -969,7 +969,7 @@ draft: false
 - [プログラミ](http://hibari.2ch.net/test/read.cgi/news4vip/1292674468/)
 - [もしも世界が193人+αのプログラマーだったら](http://hibari.2ch.net/test/read.cgi/news4vip/1292921547/)
 - [Xデーの近いプログラミングスレ](http://hibari.2ch.net/test/read.cgi/news4vip/1292936776/)
-
+<!-- -->
 
 - [2011年もプログラミング言語VIP](http://hibari.2ch.net/test/read.cgi/news4vip/1294140293/)
 - [プログラミングってどれやればいいんだよ](http://hibari.2ch.net/test/read.cgi/news4vip/1294220302/)
@@ -979,7 +979,7 @@ draft: false
 - [消してーリライトしてープログラミングスレー](http://hibari.2ch.net/test/read.cgi/news4vip/1294522066/)
 - [プログラマとか、めちゃくちゃすげぇよな！！！！！！！](http://hibari.2ch.net/test/read.cgi/news4vip/1294594783/)
 - [RPGとか作ろうぜ　　　　　　　　　　　　　　　プログラミングスレ](http://hibari.2ch.net/test/read.cgi/news4vip/1295267710/)
-
+<!-- -->
 
 - [プログラミングスレ](http://hibari.2ch.net/test/read.cgi/news4vip/1295352364/)
 - [プログラミングスレ　puroguramingusure](http://hibari.2ch.net/test/read.cgi/news4vip/1295750962/)
@@ -1007,8 +1007,8 @@ draft: false
 - [プログラミングとは何か](http://hibari.2ch.net/test/read.cgi/news4vip/1301315865/)
 - [遥かなるプログラミングスレッドゥ](http://hibari.2ch.net/test/read.cgi/news4vip/1301576888/)
 
-どんどん編集して追加するべき<br />
-思えば遠くまで来たもんだな。<br />
+どんどん編集して追加するべき  
+思えば遠くまで来たもんだな。
 
 - wwwww鯖埋めました。たぶん全部です(<del> delphiスレ以外 </del>)
 - ex17鯖分追加
@@ -1017,11 +1017,9 @@ draft: false
 - yutori鯖分追加(6/14,121[3-9]まで完全6/17簡易)
 
 
-- -
-
-まとめ乙です。<br />
-これって●持ってないと見れない系？<br />
-datかなんかあれぱ見れるんかな<br />
+まとめ乙です。  
+これって●持ってないと見れない系？  
+datかなんかあれぱ見れるんかな
 
 パー速にURLが貼られているものを追加
 

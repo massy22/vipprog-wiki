@@ -286,5 +286,5 @@ sudo make uninstall
 
 # リンク {#wd8cabae}
 
-- [http://www12.atwiki.jp/linux2ch/ 2ch-Linux-Beginners ]
-- [http://penguin.tantin.jp/mori/FrontPage.html ペンギンの杜 〜 Linux ソフト集 〜 ]
+- [5ch-Linux-Beginners](https://w.atwiki.jp/linux2ch/) <!-- <- http://www12.atwiki.jp/linux2ch/ -->
+- [ペンギンの杜 〜 Linux ソフト集 〜](http://penguin.tantin.jp/mori/FrontPage.html)

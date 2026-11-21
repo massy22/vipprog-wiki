@@ -7,29 +7,29 @@ draft: false
 
 ## お知らせ {#caef9d2c}
 
-非常にゆったりとしたペースで更新が続けられております。<br />
+非常にゆったりとしたペースで更新が続けられております。  
 プログラミングに関連することであれば何でも良いので書いてって下さい。
 
 初めての方は、[はじめてなの…やさしくして…](/docs/はじめてなの-やさしくして-)へどうぞ
 
-スレ常連の方は、既存の記事をメンテしてもらえると嬉しくて涙が出ます。<br />
+スレ常連の方は、既存の記事をメンテしてもらえると嬉しくて涙が出ます。  
 編集時のIDは「vip」、パスは「vip」です。
 
 
 ## スレ {#thread}
 
-最近は度重なる規制などによりVIPでスレが立ちにくくなってしまっている。<br />
+最近は度重なる規制などによりVIPでスレが立ちにくくなってしまっている。  
 どうしてもミングスレに行きたい人はパー速のスレをCHECK IT OUT!!
 
 
-[テンプレ](/docs/テンプレ)<br />
-[過去スレ](/docs/過去スレ)<br />
-[避難所(プログラミングしよう。)](https://ex14.vip2ch.com/test/read.cgi/part4vip/1447255011/)<br />
-[VIPプログラミングBOT@viprogram](http://twitter.com/#!/viprogram)<br />
+[テンプレ](/docs/テンプレ)  
+[過去スレ](/docs/過去スレ)  
+[避難所(プログラミングしよう。)](https://ex14.vip2ch.com/test/read.cgi/part4vip/1447255011/)  
+[VIPプログラミングBOT@viprogram](http://twitter.com/#!/viprogram)
 
 ## 共有ブログ {#blog}
 
-[VIP de Programming](https://vipprog-blog.tumblr.com/)<br />
+[VIP de Programming](https://vipprog-blog.tumblr.com/)  
 [VIP de PrograQuote](https://vipprog-quote-blog.tumblr.com/)（レス集）
 
 
