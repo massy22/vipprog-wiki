@@ -150,6 +150,36 @@ article h6,
   color: #0f172a;
 }
 
+.book-menu :is(h1,h2,h3,h4,h5,h6) {
+  margin-top: 1.2rem;
+  margin-bottom: 0.6rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  line-height: 1.22;
+  scroll-margin-top: 4.5rem;
+  color: #0b1220;
+  font-weight: 600;
+  background-clip: padding-box;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.book-menu :is(h1,h2,h3,h4,h5,h6) {
+  background-color: rgba(245, 166, 35, var(--heading-bg-alpha));
+}
+
+.book-menu :is(h1,h2,h3,h4,h5,h6) a.anchor {
+  display: none;
+}
+
+.book-menu ul:not(#book-search-results) a {
+  display: inline-flex;
+}
+
+.book-menu .book-brand {
+  margin-top: 0;
+}
+
 .book-menu nav hr {
   border: 0;
   border-top: 1px solid #e2e8f0;
