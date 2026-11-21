@@ -435,7 +435,7 @@ System.inform("hello world!");
 ```
 
 
-## neko mimi Fu** {#bf-neko}
+## neko mimi Fu\*\* {#bf-neko}
 
 ```
 おにいさまおにいさまおにいさまおにいさまキスキス…ネコミミ！おにいさまおにいさま

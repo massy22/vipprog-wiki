@@ -110,6 +110,10 @@ article h6,
   margin-bottom: 0.4rem;
 }
 
+.markdown dl dd {
+  margin-inline-start: 1rem;
+}
+
 /* 脚注 */
 .markdown .footnotes {
   margin-top: 2rem;
@@ -123,6 +127,15 @@ article h6,
   text-decoration: none;
   font-weight: 600;
   margin: 0 2px;
+}
+
+.markdown sup a.footnote-ref {
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0 2px;
+}
+.markdown sup a.footnote-ref::before {
+  content: "*";
 }
 
 /* パンくずリスト */
@@ -141,13 +154,35 @@ article h6,
   text-decoration: underline;
 }
 
-/* 左サイドバー MenuBar の見出し強調 */
-.book-menu nav ul > li > strong {
-  display: block;
-  margin-top: 1rem;
-  margin-bottom: 0.25rem;
-  font-weight: 700;
-  color: #0f172a;
+/* 左サイドバー MenuBar */
+.book-menu :is(h1,h2,h3,h4,h5,h6) {
+  margin-top: 1.2rem;
+  margin-bottom: 0.6rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  line-height: 1.22;
+  scroll-margin-top: 4.5rem;
+  color: #0b1220;
+  font-weight: 600;
+  background-clip: padding-box;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.book-menu :is(h1,h2,h3,h4,h5,h6) {
+  background-color: rgba(245, 166, 35, var(--heading-bg-alpha));
+}
+
+.book-menu :is(h1,h2,h3,h4,h5,h6) a.anchor {
+  display: none;
+}
+
+.book-menu ul:not(#book-search-results) a {
+  display: inline-flex;
+}
+
+.book-menu .book-brand {
+  margin-top: 0;
 }
 
 .book-menu nav hr {

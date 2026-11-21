@@ -30,16 +30,12 @@ draft: false
 
 - [Cnvfrm(Windows95/98/Me / プログラミング)](http://www.vector.co.jp/soft/win95/prog/se205787.html)<br />
   VB, VB5CCEで作成された frmファイルを リソーススクリプトにコンバート
-
-<dl>
-  <dt>VB5CCE入手</dt>
-  <dd></dd>
-</dl>
-
-[Visual Basic Version 5.0 Control Creation Edition SP2 日本語版](http://download.microsoft.com/download/vbcc/SP/05.00.4319/W9XNT4/JA/VB5CCEIN.EXE) , 
-[Visual Basic 5.0 Control Creation Edition: SP2 ヘルプ ファイル](http://www.microsoft.com/downloads/details.aspx?FamilyID=b4394931-d7ab-4d38-a3f5-511fd3165b7f&DisplayLang=ja) , 
-[Visual Basic Version 5.0 Control Creation Edition: レジストリ修正モジュール](http://www.microsoft.com/downloads/details.aspx?FamilyID=e91b767c-30d6-407d-b0f3-fd93faebb592&DisplayLang=ja) , 
-[Visual Basic 5.0: RecentFiles ツール](http://www.microsoft.com/downloads/details.aspx?familyid=C95613D6-D8D2-4A85-9139-3992B601D08A&displaylang=ja)
+  
+  VB5CCE入手
+  : [Visual Basic Version 5.0 Control Creation Edition SP2 日本語版](http://download.microsoft.com/download/vbcc/SP/05.00.4319/W9XNT4/JA/VB5CCEIN.EXE) , 
+  [Visual Basic 5.0 Control Creation Edition: SP2 ヘルプ ファイル](http://www.microsoft.com/downloads/details.aspx?FamilyID=b4394931-d7ab-4d38-a3f5-511fd3165b7f&DisplayLang=ja) , 
+  [Visual Basic Version 5.0 Control Creation Edition: レジストリ修正モジュール](http://www.microsoft.com/downloads/details.aspx?FamilyID=e91b767c-30d6-407d-b0f3-fd93faebb592&DisplayLang=ja) , 
+  [Visual Basic 5.0: RecentFiles ツール](http://www.microsoft.com/downloads/details.aspx?familyid=C95613D6-D8D2-4A85-9139-3992B601D08A&displaylang=ja)
 
 ## 関連リンク {#hd75a5fb}
 
@@ -66,81 +62,44 @@ draft: false
 
 ## GUI（Graphical User Interface）関連リンク {#c1e693e5}
 
-<dl>
-  <dt><a href="http://msdn.microsoft.com/library/ja/default.asp?url=/library/ja/dnaero/html/usercontrol.asp">MSDN Japan > ユーザー インターフェイスの適度な制御の選択</a></dt>
-  <dd>アプリケーションのユーザーインターフェイスはユーザーとコンピュータの間に位置する仲介物</dd>
-</dl>
+[MSDN Japan > ユーザー インターフェイスの適度な制御の選択](http://msdn.microsoft.com/library/ja/default.asp?url=/library/ja/dnaero/html/usercontrol.asp)
+: アプリケーションのユーザーインターフェイスはユーザーとコンピュータの間に位置する仲介物
+
+[MSDN Japan > Windows ユーザー エクスペリエンス ガイドライン](http://msdn.microsoft.com/ja-jp/library/aa511258.aspx)
+: Windows ユーザー エクスペリエンス ガイドライン (UX ガイド)の目的 ～
+  ```
+  * Windows ベースのすべてのアプリケーションにとって、質の高い、一貫性のある基準を設定する。
+  * ユーザー エクスペリエンスに関する特定の質問に答える。
+  * 仕事をより簡単にする。
+  ```
+
+[Joel on Software - プログラマのためのユーザインタフェースデザイン](http://japanese.joelonsoftware.com/uibook/chapters/1.html)
+: 環境をコントロールできれば楽しく感じるもの
+
+[ダメなユーザインタフェイス講座](http://www.geocities.co.jp/SiliconValley-Oakland/8192/)
+: やってはいけないインターフェイス
 
 
-<dl>
-  <dt>MSDN Japan</dt>
-  <dd></dd>
-</dl>
+[U-Site](http://www.usability.gr.jp/) > [Jakob Nielsen博士のAlertbox](http://www.usability.gr.jp/alertbox/)
+: [Alertbox: ダイアログボックスに屈服（2007年7月23日）](http://www.usability.gr.jp/alertbox/20070723_dialog-box.html)
+  : GUIに対するユーザの理解。　関連：[インタラクションデザイン - Wikipedia](https://ja.wikipedia.org/?curid=1001389)
+  
+  [Alertbox: 「OK」「キャンセル」、どちらが先か？（2008年5月27日）](http://www.usability.gr.jp/alertbox/20080527_ok-cancel.html)
+  : ダイアログボックスでのボタン配置
 
-Windows ユーザー エクスペリエンス ガイドライン (UX ガイド)の目的 ～
-> 
+[万物のユーザーインターフェース考房](http://www.st.rim.or.jp/~k-kazuma/UI/UI.html)
+: ユーザーインターフェース設計のポイント
 
-```
-* Windows ベースのすべてのアプリケーションにとって、質の高い、一貫性のある基準を設定する。
-* ユーザー エクスペリエンスに関する特定の質問に答える。
-* 仕事をより簡単にする。
-```
+[ソフトウェアのユニバーサルデザイン設計手法](http://www.ergo-design.org/results/40/16i12.htm)
+: 障害者向け製品からのアプローチ、一般製品からのアプローチ
 
+[ユーザーインターフェースデザイン研究室](http://www.phenomena.co.jp/phenomena/uid_lab/index.html)
+: ユーザーインターフェース・デザインに関する各種資料
 
-<dl>
-  <dt><a href="http://japanese.joelonsoftware.com/uibook/chapters/1.html">Joel on Software - プログラマのためのユーザインタフェースデザイン</a></dt>
-  <dd>環境をコントロールできれば楽しく感じるもの</dd>
-</dl>
+[使える GUI デザイン](http://www.emptypage.jp/translations/benroe/gui.html)
+: フリー、オープンソース・ソフトウェア開発者のための手引き
 
-
-<dl>
-  <dt><a href="http://www.geocities.co.jp/SiliconValley-Oakland/8192/">ダメなユーザインタフェイス講座</a></dt>
-  <dd>やってはいけないインターフェイス</dd>
-</dl>
+[ソシオメディア - UIデザインパターン](http://www.sociomedia.co.jp/category/uidesignpatterns)
+: 注：ウェブアプリケーションの改善に役立つノウハウ（参考）
 
 
-<dl>
-  <dt><a href="http://www.usability.gr.jp/">U-Site</a> &gt; <a href="http://www.usability.gr.jp/alertbox/">Jakob Nielsen博士のAlertbox</a></dt>
-  <dd></dd>
-  <dt><a href="http://www.usability.gr.jp/alertbox/20070723_dialog-box.html">Alertbox: ダイアログボックスに屈服（2007年7月23日）</a></dt>
-  <dd></dd>
-</dl>
-
-GUIに対するユーザの理解。　関連：[インタラクションデザイン - Wikipedia](http://ja.wikipedia.org/wiki/%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%A9%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3)
-
-<dl>
-  <dt><a href="http://www.usability.gr.jp/alertbox/20080527_ok-cancel.html">Alertbox: 「OK」「キャンセル」、どちらが先か？（2008年5月27日）</a></dt>
-  <dd></dd>
-</dl>
-
-ダイアログボックスでのボタン配置
-
-
-<dl>
-  <dt><a href="http://www.st.rim.or.jp/~k-kazuma/UI/UI.html">万物のユーザーインターフェース考房</a></dt>
-  <dd>ユーザーインターフェース設計のポイント</dd>
-</dl>
-
-
-<dl>
-  <dt><a href="http://www.ergo-design.org/results/40/16i12.htm">ソフトウェアのユニバーサルデザイン設計手法</a></dt>
-  <dd>障害者向け製品からのアプローチ、一般製品からのアプローチ</dd>
-</dl>
-
-
-<dl>
-  <dt><a href="http://www.phenomena.co.jp/phenomena/uid_lab/index.html">ユーザーインターフェースデザイン研究室</a></dt>
-  <dd>ユーザーインターフェース・デザインに関する各種資料</dd>
-</dl>
-
-
-<dl>
-  <dt><a href="http://www.emptypage.jp/translations/benroe/gui.html">使える GUI デザイン</a></dt>
-  <dd>フリー、オープンソース・ソフトウェア開発者のための手引き</dd>
-</dl>
-
-
-<dl>
-  <dt><a href="http://www.sociomedia.co.jp/category/uidesignpatterns">ソシオメディア - UIデザインパターン</a></dt>
-  <dd>注：ウェブアプリケーションの改善に役立つノウハウ（参考）</dd>
-</dl>
